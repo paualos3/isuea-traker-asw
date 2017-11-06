@@ -7,8 +7,11 @@
     ----------------------------------------------------------------- 
 
 Pau Alòs
+
 Miguel Ángel Alvárez
+
 Gerard Esteve
+
 Oriol Saborido
 
 http://isueatrakerasw.herokuapp.com/
