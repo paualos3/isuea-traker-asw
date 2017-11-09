@@ -3,6 +3,15 @@
 <h1>Issues</h1>
 
 <table>
+  <tbody>
+    <td><%= link_to 'All', 'https://isuea-traker-asw-paualos3.c9users.io/issues' %></td>
+    <td><%= link_to 'Open', 'https://isuea-traker-asw-paualos3.c9users.io/issues?open=true' %></td>
+    <td><%= link_to 'Closed', 'https://isuea-traker-asw-paualos3.c9users.io/issues?open=close' %></td>
+    <td><%= link_to 'My Issues', 'https://isuea-traker-asw-paualos3.c9users.io/issues?uid=' %></td>
+  </tbody>
+</table>
+
+<table>
   <thead>
     <tr>
       <th>Issue</th>
@@ -33,3 +42,4 @@
 <br>
 
 <%= link_to 'New Issue', new_issue_path %>
+

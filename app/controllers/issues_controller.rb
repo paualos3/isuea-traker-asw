@@ -28,6 +28,7 @@ class IssuesController < ApplicationController
     
     @issue = Issue.new(issue_params)
     @issue.user = "DefaultUser"
+    @issue.open = true
     respond_to do |format|
       if @issue.save
         format.html { redirect_to @issue, notice: 'Issue was successfully created.' }
@@ -74,4 +75,22 @@ class IssuesController < ApplicationController
       # params.require(:issue).permit(:issue, :description, :user)
        params.require(:issue).permit(:issue, :description, :user)
     end
+    
+  # PATCH/PUT /issues/1
+  # PATCH/PUT /issues/1.json
+  def closeIssue
+    respond_to do |format|
+      @Issue.open = false
+    end
+  end
+  
+  
+  # PATCH/PUT /issues/1
+  # PATCH/PUT /issues/1.json
+  def openIssue
+    respond_to do |format|
+      @Issue.open = true
+    end
+  end
+    
 end
