@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  issueId: 1
-  content: MyText
-  votes: 1
+  author: MyString
+  body: MyText
+  issue_id: 
 
 two:
-  issueId: 1
-  content: MyText
-  votes: 1
+  author: MyString
+  body: MyText
+  issue_id: 

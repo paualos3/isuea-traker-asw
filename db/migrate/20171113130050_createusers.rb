@@ -1,4 +1,4 @@
-class CreateUsers < ActiveRecord::Migration[5.1]
+class Createusers < ActiveRecord::Migration
   def change
     create_table :users do |t|
       t.string :provider

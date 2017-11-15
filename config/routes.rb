@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :comments
+  resources :comments
   get 'sessions/create'
 
   get 'sessions/destroy'
@@ -10,11 +12,19 @@ Rails.application.routes.draw do
   get 'signout', to: 'sessions#destroy', as: 'signout'
 
   resources :sessions, only: [:create, :destroy]
-  resource :home, only: [:show]
+  resources :home, only: [:show]
 
   root to: "issues#index"
-
+  
   resources :issues
   resources :users
-  #root 'issues#index'
+  
+  get 'opened', to: 'issues#openIssues'
+  get 'closed', to: 'issues#closeIssues'
+  get 'mine', to: 'issues#mine'
+  
+  get 'closeIssue', controller: "issues", action: "closeIssue"
+  get 'openIssue', controller: "issues", action: "openIssue"
+  get 'isOpen', controller: "issues", action: "isOpen"
+
 end

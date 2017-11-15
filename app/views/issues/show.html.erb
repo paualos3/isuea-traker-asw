@@ -17,6 +17,23 @@
   <%= @issue.user %>
 </p>
 
+<p>
+  <strong>Category:</strong>
+  <%= @issue.category %>
+</p>
+
+<p>
+  <strong>Votes:</strong>
+  <%= @issue.votes %>
+  
+<div class="vote circle">
+  <div class="increment up"></div>
+  <div class="increment down"></div>
+  
+  <div class="count"><%= @issue.votes %></div>
+</div>
+</p>
+
 <p><%if @issue.open %> <notice:"Issue is open">
   <%end%> </p>
 <p>
@@ -33,13 +50,3 @@
   <%= link_to 'Back', issues_path %>
   
 <h2>Comments:</h2>
-
-<table>
-  <tbody>
-    <% @comments.each do |comment| %>
-      <tr>
-        <td><%= comment.content %></td>
-      </tr>
-    <% end %>
-  </tbody>    
-</table>

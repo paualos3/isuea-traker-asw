@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Issues</h1>
+<h1>Open issues</h1>
 
 <table>
   <tbody>
@@ -14,26 +14,22 @@
 <table>
   <thead>
     <tr>
-      
       <th>Issue</th>
       <th>Description</th>
       <th>User</th>
-      <th>Category</th>
-      <th>Status</th>
       <th>Created</th>
       <th>Last Update</th>
       <th colspan="5"></th>
     </tr>
   </thead>
-
+  
   <tbody>
+    <% @issues = Issue.where(open: true) %>
     <% @issues.each do |issue| %>
       <tr>
         <td><%= issue.issue %></td>
         <td><%= issue.description %></td>
         <td><%= issue.user %></td>
-        <td><%= issue.category %></td>
-        <td><%= issue.getStatus %></td>
         <td><%= issue.created_at %></td>
         <td><%= issue.updated_at %></td>
         <td><%= link_to 'Show', issue %></td>
@@ -47,4 +43,3 @@
 <br>
 
 <%= link_to 'New Issue', new_issue_path %>
-

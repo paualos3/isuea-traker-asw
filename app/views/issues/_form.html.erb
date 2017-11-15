@@ -1,4 +1,4 @@
-<%= form_with(model: issue, local: true) do |form| %>
+<%= form_for(@issue) do |form| %>
   <% if issue.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(issue.errors.count, "error") %> prohibited this issue from being saved:</h2>
@@ -12,14 +12,33 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :issue %>
-    <%= form.text_field :issue, id: :issue_issue %>
+    <%= form.label :Title %>
+    <br>
+    <%= form.text_field :issue, id: :issue_issue,:required => true %>
   </div>
 
   <div class="field">
-    <%= form.label :description %>
-    <%= form.text_field :description, id: :issue_description %>
+    <%= form.label :Description %>
+    <br>
+    <%= form.text_area :description, id: :issue_description,:required => true %>
   </div> 
+  
+  <div class="field">
+    <%= form.label :Category %>
+    <%= form.select :category, ['Task', 'Bug','Enhancement','Proposal'], id: :issue_category %>
+  </div> 
+
+<!--
+  <div > 
+    <select name="cars">
+      <option value="volvo">Volvo</option>
+      <option value="saab">Saab</option>
+      <option value="fiat">Fiat</option>
+      <option value="audi">Audi</option>
+    </select>
+  </div>-->
+  
+  
   
   <!--<div class="field"> 
     %= form.label :user % 

@@ -1,6 +1,25 @@
 <h1>Editing Issue</h1>
-
+<!--
+ opened: <= debug @issue.open %>, <= @issue.isOpened() %>
+-->
 <%= render 'form', issue: @issue %>
 
 <%= link_to 'Show', @issue %> |
-<%= link_to 'Back', issues_path %>
+<%= link_to 'Back', issues_path %> |
+
+<% if @issue.isOpened()   %>
+    <%= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id) %>
+<% end  %>
+
+<% if !@issue.isOpened()  %>
+    <%= link_to 'Open Issue',  openIssue_path(:id=>@issue.id) %>
+<% end  %>
+<!-- FUNCIONA
+< if @issue.isOpened() == true  %>
+    <= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id) %>
+< end  %>
+
+< if @issue.isClosed() == true %>
+    <= link_to 'Open Issue',  openIssue_path(:id=>@issue.id) %>
+< end  %>
+% -->
