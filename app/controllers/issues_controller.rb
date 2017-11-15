@@ -12,6 +12,21 @@ class IssuesController < ApplicationController
     #@watching = Watch.where()
   end
   
+  def openIssues
+    logger.debug("Opened function at controller")
+    @issues = Issue.where(open: true).order(sort_column + " " + sort_direction)
+  end
+  
+  def closeIssues
+    logger.debug("Opened function at controller")
+    @issues = Issue.where(open: false).order(sort_column + " " + sort_direction)
+  end
+  
+  def mine
+    logger.debug("Opened function at controller")
+    @issues = Issue.where(user: current_user.name).order(sort_column + " " + sort_direction)
+  end
+  
   
   def sort_column
     sortValue = params[:sort]
