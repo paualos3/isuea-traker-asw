@@ -8,25 +8,23 @@
     <td><%= link_to 'Open', 'opened' %></td>
     <td><%= link_to 'Closed', 'closed' %></td>
     <td><%= link_to 'My Issues', 'mine' %></td>
+    
   </tbody>
 </table>
 
-<table>
-  <thead>
+<table class="pretty">
     <tr>
       
-      <th>Issue</th>
-      <th>Description</th>
-      <th>User</th>
-      <th>Category</th>
-      <th>Status</th>
-      <th>Created</th>
-      <th>Last Update</th>
+      <th><%= sortable "issue", "Title" %></th>
+      <th><%= sortable "description", "Description" %></th>
+      <th><%= sortable "user", "User" %></th>
+      <th><%= sortable "Category" %></th>
+      <th><%= sortable "open", "Status" %></th>
+      <th><%= sortable "created_at", "Created" %></th>
+      <th><%= sortable "updated_at", "Last Update" %></th>
       <th colspan="5"></th>
     </tr>
-  </thead>
 
-  <tbody>
     <% @issues.each do |issue| %>
       <tr>
         <td><%= issue.issue %></td>
@@ -41,7 +39,6 @@
         <td><%= link_to 'Destroy', issue, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
-  </tbody>
 </table>
 
 <br>

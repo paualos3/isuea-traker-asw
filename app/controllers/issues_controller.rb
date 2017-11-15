@@ -1,15 +1,34 @@
 class IssuesController < ApplicationController
   before_action :set_issue, only: [:show, :edit, :update, :destroy, :closeIssue, :openIssue]
- # helper_method :sort_column, :sort_direction
+  helper_method :sort_column, :sort_direction
 
   # GET /issues
   # GET /issues.json
   def index
-    @issues = Issue.all
+   # @issues = Issue.all
+    @issues = Issue.order(sort_column + " " + sort_direction)
     #@opened = Issue.where(open: true)
     #@mines = Issue.where(user: 'LoggedUser')
     #@watching = Watch.where()
   end
+  
+  
+  def sort_column
+    sortValue = params[:sort]
+    if sortValue == nil
+      sortValue = "created_at"
+    end
+    Issue.column_names.include?(sortValue) ? sortValue : sortValue
+  end
+  
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+  end
+  
+  
+
+
+
 
   # GET /issues/1
   # GET /issues/1.json
