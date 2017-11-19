@@ -2,25 +2,24 @@
 
 <h1>Issues</h1>
 
-<table>
-  <tbody>
-    <td><%= link_to 'All', 'issues'  %></td>
-    <td><%= link_to 'Open', 'opened' %></td>
-    <td><%= link_to 'Closed', 'closed' %></td>
-    <td><%= link_to 'My Issues', 'mine' %></td>
-    
-  </tbody>
-</table>
+Filter by : 
+    <td><%= link_to 'All |', 'issues'  %></td> 
+    <td><%= link_to ' Open |', 'opened' %></td> 
+    <td><%= link_to ' Closed |', 'closed' %></td> 
+    <td><%= link_to ' My Issues |', 'mine' %></td>
+    <br>
+  <br>
 
 <table class="pretty">
     <tr>
       
       <th><%= sortable "issue", "Title" %></th>
-      <th><%= sortable "description", "Description" %></th>
-      <th><%= sortable "user", "User" %></th>
+      <th><%= sortable "user", "Created By" %></th>
       <th><%= sortable "Category" %></th>
-      <th><%= sortable "Assignee" %></th>
+      <th><%= sortable "Priority" %></th>
       <th><%= sortable "open", "Status" %></th>
+      <th>Votes</th>
+      <th><%= sortable "Assignee", "Assigned To" %></th>
       <th><%= sortable "created_at", "Created" %></th>
       <th><%= sortable "updated_at", "Last Update" %></th>
       <th colspan="5"></th>
@@ -29,11 +28,12 @@
     <% @issues.each do |issue| %>
       <tr>
         <td><%= issue.issue %></td>
-        <td><%= issue.description %></td>
         <td><%= issue.user %></td>
         <td><%= issue.category %></td>
-        <td><%= issue.assignee %></td>
+        <td><%= issue.priority %></td>
         <td><%= issue.getStatus %></td>
+        <td><%= issue.get_upvotes.size-issue.get_downvotes.size %></td>
+        <td><%= issue.assignee %></td>
         <td><%= issue.created_at %></td>
         <td><%= issue.updated_at %></td>
         <td><%= link_to 'Show', issue %></td>

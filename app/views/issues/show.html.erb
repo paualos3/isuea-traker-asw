@@ -1,102 +1,133 @@
 <p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Issue: </strong>
-  <%= @issue.issue %>
-
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @issue.description %>
-  
-</p>
-
-<p>
-  <strong>User:</strong>
-  <%= @issue.user %>
-</p>
-
-<p>
-  <strong>Assignee:</strong>
-  <%= @issue.assignee %>
-</p>
-
-<p>
-  <strong>Category:</strong>
-  <%= @issue.category %>
-</p>
-
-<p>
-  <strong>Votes:</strong>
-  <%= (@issue.get_upvotes.size-@issue.get_downvotes.size) %>
-  
-  <div class="vote circle" style="text-align:Left;">
-    <%= link_to like_issue_path(@issue), class: "like", method: :put do%>
-    <button type="button" class="btn btn-info" aria-label="Left Align">
-      <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-      <span class="badge"><%=@issue.get_upvotes.size %></span>
-    </button>
-    <% end %>
+<div class="row">
+  <div class="col-sm-8" >
+    <p >
+      <strong>Issue: </strong>
+      <%= @issue.issue %>
+    </p>
     
-    <%= link_to unlike_issue_path(@issue), class: "like", method: :put do%>
-    <button type="button" class="btn btn-info" aria-label="Left Align">
-      <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
-      <span class="badge"><%=@issue.get_downvotes.size %></span>
-    </button>
-    <% end %>
-  </div>
-</p>
+    <p>
+      <strong>Created:</strong>
+      <%= @issue.created_at %>
+    </p>
 
-<p><%if @issue.open %> <notice:"Issue is open">
-  <%end%> </p>
-<p>
-  <strong>Created:</strong>
-  <%= @issue.created_at %>
-</p>
-
-<p>
-  <strong>Last Update:</strong>
-  <%= @issue.updated_at %>
-</p>
-
-<p>
-  <strong>Attachment:</strong>
-  <!--%= @issue.attachment %--> 
-
+    <p>
+      <strong>Last Update:</strong>
+      <%= @issue.updated_at %>
+    </p>
+    
+    
+    <p>
+      <strong>Description:</strong>
+      <%= @issue.description %>
+    </p>
+    <br>
+    <p>
+      <strong>Attachment:</strong>
         <% if @issue.attachment? %>
           <a target="_blank" href="<%= @issue.attachment %>"> Ver archivo </a>
         <% else %>
           This Issue doesn't have an attachment
         <% end %>
+    </p>
+    
+  </div>
 
 
-        
-  <!--%= image_tag(@issue.attachment_url(:with_mirror)) if @issue.attachment_url %-->
-      <!--%= image_tag(@issue.attachment_url) %> | 
-      
-      
-      <!--%= image_tag(@issue.attachment.url) %> |
-      <!--%= link_to 'gfds', :action=> 'download_file' , :id=>@issue.id %-->
+  <div class="col-sm-4" >
+    
+    
+    <div><%= link_to 'Edit', edit_issue_path(@issue), class:"btn btn-primary" %>
+    <%= link_to 'Back', issues_path, class:"btn btn-primary" %>
+    </div>
+    <br>
+    
+    <div class="well"> 
+    
+    <p>
+    <strong>Created by : </strong>
+      <%= @issue.user %>
+    </p>
 
-</p>
+    <p>
+    <strong>Assigned to : </strong>
+      <%= @issue.assignee %>
+    </p>
+    
+    <p>
+    <strong>Category:</strong>
+      <%= @issue.category %>
+    </p>
 
-  <td><%= link_to 'Edit', edit_issue_path(@issue) %> 
-    <span class="glyphicon glyphicon-edit"></span></td> |
-  <td><%= link_to 'Back', issues_path %> </td>
+    <p>
+    <strong>Priority: </strong>
+      <%= @issue.priority %>
+    </p>
+    
+    <p>
+    <strong>Status: </strong>
+       <%= @issue.getStatus() %>
+
+    </p>
+    
+
+    
+    
+    <p>
+      <strong>Votes:</strong>
+        <%= (@issue.get_upvotes.size-@issue.get_downvotes.size) %>
+  
+      <div class="vote circle" style="text-align:Left;">
+        <%= link_to like_issue_path(@issue), class: "like", method: :put do%>
+      <button type="button" class="btn btn-success" aria-label="Left Align">
+        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+        <span class="badge"><%=@issue.get_upvotes.size %></span>
+      </button>
+      <% end %>
+    
+      <%= link_to unlike_issue_path(@issue), class: "like", method: :put do%>
+      <button type="button" class="btn btn-danger" aria-label="Left Align">
+        <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+        <span class="badge"><%=@issue.get_downvotes.size %></span>
+      </button>
+      <% end %>
+      </div>
+    </p>
+    </div>
+  </div>
+
+
+</div>
+<hr class="divider">
+
+<div class="row">
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
   
 <br>
 <h2> <%= @issue.comments.count %> Comments</h2>
 <ol class="pageCommentBody">
   <% @issue.comments.each do |comment| %>
+  <div class="well well-lg .well"> 
     <li class="list">
-      <div class=subtitle>
+      <div class="subtitle">
         <p>
         <td><%= 'Comment by: ' %> <strong><%= comment.userName  %></strong> </td> 
         <td> | <%= distance_of_time_in_words_to_now(comment.created_at) %></td>
         <td><%= ' ago ' %></td>
           <% if(comment.getUserId == session[:user_id]) %>
-            <td>| <b><%= link_to 'Destroy', destroycomment_path(:id=>@issue.id, :comment=>comment),data: { confirm: 'Are you sure?' } %></b></td>
+            <td>| <b><%= link_to 'Destroy' , destroycomment_path(:id=>@issue.id, :comment=>comment),data: { confirm: 'Are you sure?' } , class:"btn-xs btn-danger"%></b></td>
 
           <% end %>
           </p>
@@ -105,6 +136,7 @@
         <td><%= comment.body %></td>
       </div>
     </li>
+    </div>
     <br>
   <% end %>
 </ol> 

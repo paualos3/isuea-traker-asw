@@ -17,6 +17,16 @@
  body {
   font-family: Verdana, Helvetica, Arial;
   font-size: 14px;
+  padding: 20px;
+}
+
+.divider {
+  height: 2px;
+  width:100%;
+  display:block; /* for use on default inline elements like span */
+  margin: 9px 0;
+  overflow: hidden;
+  background-color: #000000;
 }
 
 a img {
@@ -102,4 +112,5 @@ table.pretty {
 
 .like:hover {
   text-decoration: none;
+  
 }

@@ -10,32 +10,47 @@
       </ul>
     </div>
   <% end %>
+  
 
-  <div class="field">
+  <div class="field form-group" style="te">
+    <center>
     <%= form.label :Title %>
-    <br>
     <%= form.text_field :issue, id: :issue_issue,:required => true %>
+    </center>
   </div>
 
-  <div class="field">
+  <div class="field text-center col-sm-12">
+
     <%= form.label :Description %>
-    <br>
     <%= form.text_area :description, id: :issue_description,:required => true %>
+
   </div> 
   
   <div class="field">
+    <center>
     <%= form.label :Category %>
     <%= form.select :category, ['Task', 'Bug','Enhancement','Proposal'], id: :issue_category %>
+    </center>
   </div> 
   
   <div class="field">
+    <center>
     <%= form.label :Assignee %>
     <%= form.collection_select :assignee , User.all, :name, :name, include_blank: false %>
+    </center>
+  </div> 
+  
+   <div class="field">
+    <center>
+    <%= form.label :Priority %>
+    <%= form.select :priority, ['Trivial', 'Minor','Major','Critical','Blocker'], id: :issue_priority %>
+    </center>
   </div> 
   
     <div class="field">
+    <center>
     <%= form.file_field :attachment, multiple: false %>
-    <br>
+    </center>
     <!--%= form.text_area :attachment, id: :issue_attachment,:required => false %-->
   </div> 
 
