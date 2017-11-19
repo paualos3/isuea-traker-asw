@@ -16,6 +16,11 @@ gem 'coffee-rails', '~> 4.1.0'
 #gem 'omniauth'
 gem 'omniauth-google-oauth2'
 
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem 'carrierwave', '~> 0.9'
+gem 'bootstrap-sass', '~> 2.3.2'
+
 gem 'paperclip'
 
 gem 'rack-cors', :require => 'rack/cors'
@@ -29,7 +34,9 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-gem 'acts_as_votable', '~> 0.10.0'
+gem 'acts_as_votable'
+
+gem 'bootstrap'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

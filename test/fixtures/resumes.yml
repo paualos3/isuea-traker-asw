@@ -2,10 +2,8 @@
 
 one:
   name: MyString
-  body: MyText
-  issue_id: 
+  attachment: MyString
 
 two:
   name: MyString
-  body: MyText
-  issue_id: 
+  attachment: MyString

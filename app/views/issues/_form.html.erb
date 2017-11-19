@@ -27,6 +27,17 @@
     <%= form.label :Category %>
     <%= form.select :category, ['Task', 'Bug','Enhancement','Proposal'], id: :issue_category %>
   </div> 
+  
+  <div class="field">
+    <%= form.label :Assignee %>
+    <%= form.collection_select :assignee , User.all, :name, :name, include_blank: false %>
+  </div> 
+  
+    <div class="field">
+    <%= form.file_field :attachment, multiple: false %>
+    <br>
+    <!--%= form.text_area :attachment, id: :issue_attachment,:required => false %-->
+  </div> 
 
 <!--
   <div > 

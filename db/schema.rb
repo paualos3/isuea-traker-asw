@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version:20171113130050) do
+ActiveRecord::Schema.define(version: 20171118235058) do
 
   create_table "ar_internal_metadata", primary_key: "key", force: :cascade do |t|
     t.string   "value"
@@ -20,6 +20,20 @@ ActiveRecord::Schema.define(version:20171113130050) do
   end
 
   add_index "ar_internal_metadata", ["key"], name: "sqlite_autoindex_ar_internal_metadata_1", unique: true
+
+  create_table "comments", force: :cascade do |t|
+    t.string   "name"
+    t.text     "body"
+    t.datetime "created_at", null: false
+    t.integer  "issue_id"
+    t.integer  "user_id"
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "comments", ["issue_id", "created_at"], name: "index_comments_on_issue_id_and_created_at"
+  add_index "comments", ["issue_id"], name: "index_comments_on_issue_id"
+  add_index "comments", ["user_id", "created_at"], name: "index_comments_on_user_id_and_created_at"
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id"
 
   create_table "issues", force: :cascade do |t|
     t.string   "issue"
@@ -31,6 +45,15 @@ ActiveRecord::Schema.define(version:20171113130050) do
     t.string   "open"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "assignee"
+    t.string   "attachment"
+  end
+
+  create_table "resumes", force: :cascade do |t|
+    t.string   "name"
+    t.string   "attachment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -42,5 +65,20 @@ ActiveRecord::Schema.define(version:20171113130050) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "votes", force: :cascade do |t|
+    t.integer  "votable_id"
+    t.string   "votable_type"
+    t.integer  "voter_id"
+    t.string   "voter_type"
+    t.boolean  "vote_flag"
+    t.string   "vote_scope"
+    t.integer  "vote_weight"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "votes", ["votable_id", "votable_type", "vote_scope"], name: "index_votes_on_votable_id_and_votable_type_and_vote_scope"
+  add_index "votes", ["voter_id", "voter_type", "vote_scope"], name: "index_votes_on_voter_id_and_voter_type_and_vote_scope"
 
 end

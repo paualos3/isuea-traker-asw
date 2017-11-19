@@ -18,20 +18,34 @@
 </p>
 
 <p>
+  <strong>Assignee:</strong>
+  <%= @issue.assignee %>
+</p>
+
+<p>
   <strong>Category:</strong>
   <%= @issue.category %>
 </p>
 
 <p>
   <strong>Votes:</strong>
-  <%= @issue.votes %>
+  <%= (@issue.get_upvotes.size-@issue.get_downvotes.size) %>
   
-<div class="vote circle">
-  <div class="increment up"></div>
-  <div class="increment down"></div>
-  
-  <div class="count"><%= @issue.votes %></div>
-</div>
+  <div class="vote circle" style="text-align:Left;">
+    <%= link_to like_issue_path(@issue), class: "like", method: :put do%>
+    <button type="button" class="btn btn-info" aria-label="Left Align">
+      <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+      <span class="badge"><%=@issue.get_upvotes.size %></span>
+    </button>
+    <% end %>
+    
+    <%= link_to unlike_issue_path(@issue), class: "like", method: :put do%>
+    <button type="button" class="btn btn-info" aria-label="Left Align">
+      <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+      <span class="badge"><%=@issue.get_downvotes.size %></span>
+    </button>
+    <% end %>
+  </div>
 </p>
 
 <p><%if @issue.open %> <notice:"Issue is open">
@@ -46,7 +60,56 @@
   <%= @issue.updated_at %>
 </p>
 
-  <%= link_to 'Edit', edit_issue_path(@issue) %> |
-  <%= link_to 'Back', issues_path %>
+<p>
+  <strong>Attachment:</strong>
+  <!--%= @issue.attachment %--> 
+
+        <% if @issue.attachment? %>
+          <a target="_blank" href="<%= @issue.attachment %>"> Ver archivo </a>
+        <% else %>
+          This Issue doesn't have an attachment
+        <% end %>
+
+
+        
+  <!--%= image_tag(@issue.attachment_url(:with_mirror)) if @issue.attachment_url %-->
+      <!--%= image_tag(@issue.attachment_url) %> | 
+      
+      
+      <!--%= image_tag(@issue.attachment.url) %> |
+      <!--%= link_to 'gfds', :action=> 'download_file' , :id=>@issue.id %-->
+
+</p>
+
+  <td><%= link_to 'Edit', edit_issue_path(@issue) %> 
+    <span class="glyphicon glyphicon-edit"></span></td> |
+  <td><%= link_to 'Back', issues_path %> </td>
   
-<h2>Comments:</h2>
+<br>
+<h2> <%= @issue.comments.count %> Comments</h2>
+<ol class="pageCommentBody">
+  <% @issue.comments.each do |comment| %>
+    <li class="list">
+      <div class=subtitle>
+        <p>
+        <td><%= 'Comment by: ' %> <strong><%= comment.userName  %></strong> </td> 
+        <td> | <%= distance_of_time_in_words_to_now(comment.created_at) %></td>
+        <td><%= ' ago ' %></td>
+          <% if(comment.getUserId == session[:user_id]) %>
+            <td>| <b><%= link_to 'Destroy', destroycomment_path(:id=>@issue.id, :comment=>comment),data: { confirm: 'Are you sure?' } %></b></td>
+
+          <% end %>
+          </p>
+      </div>
+      <div class="com">
+        <td><%= comment.body %></td>
+      </div>
+    </li>
+    <br>
+  <% end %>
+</ol> 
+<br>
+  <!--%= render @issue.comments %-->
+  <h3> Add a Comment: </h3>
+  <%= render 'comments/form' %>
+

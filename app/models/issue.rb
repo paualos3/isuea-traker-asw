@@ -1,5 +1,10 @@
 class Issue < ApplicationRecord
     
+    acts_as_votable
+    has_many :comments, :dependent => :destroy
+    mount_uploader :attachment, AttachmentUploader # Tells rails to use this uploader for this model.
+    #serialize :attachments, JSON
+    
     def isOpened
         if self.open == "t"
             logger.debug "Issue opened" 

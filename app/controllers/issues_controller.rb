@@ -1,10 +1,13 @@
 class IssuesController < ApplicationController
-  before_action :set_issue, only: [:show, :edit, :update, :destroy, :closeIssue, :openIssue]
+  before_action :set_issue, only: [:show, :edit, :update, :destroy, :closeIssue, :openIssue, :destroycomment, :upvote, :downvote, :download_file]
   helper_method :sort_column, :sort_direction
 
   # GET /issues
   # GET /issues.json
   def index
+    if !current_user
+      redirect_to "/auth/google_oauth2" and return
+    end
    # @issues = Issue.all
     @issues = Issue.order(sort_column + " " + sort_direction)
     #@opened = Issue.where(open: true)
@@ -40,7 +43,17 @@ class IssuesController < ApplicationController
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
   end
   
+  def destroycomment
+    @comment=params[:comment]
+    @issue.comments.delete(@comment)
+      redirect_to @issue, notice: 'Comment was successfully deleted.' 
+    
+  end
   
+  def download_file
+    @issue = Issue.find(params[:id])
+    send_file(@issue.attachment.path, :disposition=>'attachment' , :url_based_filename=>false)
+  end
 
 
 
@@ -67,6 +80,11 @@ class IssuesController < ApplicationController
     @issue.user = current_user.name
     @issue.votes = 0
     @issue.open = true
+    
+    #Archivo subido por el usuario.
+    archivo = params[:attachment];
+    #logger.debug("Archivo: " + archivo)
+    
     respond_to do |format|
       if @issue.save
         format.html { redirect_to @issue, notice: 'Issue was successfully created.' }
@@ -119,6 +137,18 @@ class IssuesController < ApplicationController
       format.html { redirect_to issues_url, notice: 'Issue was successfully opened.' }
     end
   end
+  
+  #upvote_from user
+  def upvote
+    @issue.upvote_from current_user
+    redirect_to @issue
+  end
+  
+  #downvote_from user
+  def downvote
+    @issue.downvote_from current_user
+    redirect_to @issue
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -129,7 +159,7 @@ class IssuesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def issue_params
       # params.require(:issue).permit(:issue, :description, :user)
-       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category)
+       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category, :assignee, :attachment)
     end
     
   end
@@ -168,5 +198,7 @@ class IssuesController < ApplicationController
       format.json { render :mine, status: :ok, location: @issue }
     end
   end
+  
+  
   
 #end

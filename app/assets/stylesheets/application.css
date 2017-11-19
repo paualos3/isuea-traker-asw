@@ -13,6 +13,7 @@
  *= require_tree .
  *= require_self
  */
+ 
  body {
   font-family: Verdana, Helvetica, Arial;
   font-size: 14px;
@@ -86,4 +87,19 @@ table.pretty {
 
 .pretty th .desc {
   background-image: url(/images/down_arrow.gif);
+}
+
+.com {
+  background-color: DarkCyan ;
+  width: 90%;
+  padding: 25px;
+  margin: 25px;
+}
+
+.thumb-box{
+  height: 500px;
+}
+
+.like:hover {
+  text-decoration: none;
 }
