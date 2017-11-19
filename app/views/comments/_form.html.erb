@@ -1,18 +1,29 @@
 <%= form_for([@issue, @issue.comments.build]) do |f| %>
 
+<div class="row">
+    <div class="col-sm-2 " style="text-align:right">
+        <h4 style="display:inline">Author :</h4> 
+    </div>
+    <div class="col-sm-4 " >
+      <%= current_user.name %>
+      <%= f.hidden_field :user_id, :value=>session[:user_id] %>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-2 " style="text-align:right">
+        <h4 style="display:inline">Comment :</h4>
+    </div>
+    <div class="col-sm-4 " >
+        <%= f.text_area :body %>
+    </div>
+    
+</div>
 
-       <h4>Author :</h4> 
-       <p>   
-            <%= current_user.name %>
-            <%= f.hidden_field :user_id, :value=>session[:user_id] %>
-          </p>
+       
 
-           <h4>Comment :</h4>
-            <p>
-                <%= f.text_area :body %>
-            </p>
+           
     <br>
-        <p>
-            <%= f.submit %>
+        <p >
+            <%= f.submit 'Create Comment', :class=> 'btn btn-primary' %>
         </p>
 <% end %>

@@ -10,15 +10,15 @@ Filter by :
     <br>
   <br>
 
-<table class="pretty">
+<table class=" pretty  table-hover">
     <tr>
       
       <th><%= sortable "issue", "Title" %></th>
       <th><%= sortable "user", "Created By" %></th>
       <th><%= sortable "Category" %></th>
       <th><%= sortable "Priority" %></th>
-      <th><%= sortable "open", "Status" %></th>
-      <th>Votes</th>
+      <th ><%= sortable "open", "Status" %></th>
+      <th style="color: #0066ff;">Votes</th>
       <th><%= sortable "Assignee", "Assigned To" %></th>
       <th><%= sortable "created_at", "Created" %></th>
       <th><%= sortable "updated_at", "Last Update" %></th>
@@ -45,4 +45,4 @@ Filter by :
 
 <br>
 
-<%= link_to 'New Issue', new_issue_path %>
+<%= link_to 'New Issue', new_issue_path, class:"btn btn-primary" %>

@@ -1,3 +1,11 @@
+<!-- <head>
+<style>
+div.field {
+    padding-left: 25%;
+}
+</style>
+</head> -->
+
 <%= form_for(@issue) do |form| %>
   <% if issue.errors.any? %>
     <div id="error_explanation">
@@ -12,46 +20,80 @@
   <% end %>
   
 
-  <div class="field form-group" style="te">
-    <center>
-    <%= form.label :Title %>
-    <%= form.text_field :issue, id: :issue_issue,:required => true %>
-    </center>
+  
+  <div class="row field" style="te">
+    
+    <div class="col-sm-4" style="text-align:right;">
+      <%= form.label :Title %>
+    </div>
+    
+    <div class="col-sm-8">
+      <%= form.text_field :issue, id: :issue_issue,:required => true %>
+    </div>
+    
   </div>
+  
 
-  <div class="field text-center col-sm-12">
-
-    <%= form.label :Description %>
-    <%= form.text_area :description, id: :issue_description,:required => true %>
-
+  <div class="row field">
+    
+    <div class="col-sm-4" style="text-align:right;">
+      <%= form.label :Description %>
+    </div>
+    
+    <div class="col-sm-8">  
+      <%= form.text_area :description, id: :issue_description,:required => true %>
+    </div>
+    
   </div> 
   
-  <div class="field">
-    <center>
-    <%= form.label :Category %>
-    <%= form.select :category, ['Task', 'Bug','Enhancement','Proposal'], id: :issue_category %>
-    </center>
+  
+  <div class="row field">
+    
+    <div class="col-sm-4" style="text-align:right;">
+      <%= form.label :Category %>
+    </div>
+    
+    <div class="col-sm-8">  
+      <%= form.select :category, ['Task', 'Bug','Enhancement','Proposal'], id: :issue_category %>
+    </div>
+    
+  </div>
+  
+  
+  <div class="row field">
+    
+    <div class="col-sm-4" style="text-align:right;">
+      <%= form.label :Assignee %>
+    </div>
+    
+    <div class="col-sm-8"> 
+      <%= form.collection_select :assignee , User.all, :name, :name, include_blank: false %>
+    </div>
+    
   </div> 
   
-  <div class="field">
-    <center>
-    <%= form.label :Assignee %>
-    <%= form.collection_select :assignee , User.all, :name, :name, include_blank: false %>
-    </center>
+  
+   <div class="row field">
+     
+    <div class="col-sm-4" style="text-align:right;">
+      <%= form.label :Priority %>
+    </div>
+    
+    <div class="col-sm-8"> 
+      <%= form.select :priority, ['Trivial', 'Minor','Major','Critical','Blocker'], id: :issue_priority  %>
+    </div>
+    
   </div> 
   
-   <div class="field">
-    <center>
-    <%= form.label :Priority %>
-    <%= form.select :priority, ['Trivial', 'Minor','Major','Critical','Blocker'], id: :issue_priority %>
-    </center>
-  </div> 
   
-    <div class="field">
-    <center>
-    <%= form.file_field :attachment, multiple: false %>
-    </center>
+  <div class="row field">
+    
+    <div class="col-sm-push-4 col-sm-8" >
+      <%= form.file_field :attachment, multiple: false %>
+    </div>
+    
     <!--%= form.text_area :attachment, id: :issue_attachment,:required => false %-->
+    
   </div> 
 
 <!--
@@ -70,11 +112,16 @@
     %= form.label :user % 
     %= form.text_field :user, id: :issue_user %
   </div> -->
-  
-  <div class="actions">
-    
- 
-  
-    <%= form.submit %>
+  <div class="row field"> </div>
+
+  <div class="actions row">
+
+    <div class="col-sm-push-4 col-sm-8" >
+      <%= form.submit 'Save Issue', :class=> 'btn btn-primary' %>
+      
+      <%= link_to 'Back', issues_path %>
+      </div>
   </div>
+
+  
 <% end %>

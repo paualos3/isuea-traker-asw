@@ -14,10 +14,12 @@ Filter by :
 <table class="pretty">
     <tr>
       <th><%= sortable "issue", "Title" %></th>
-      <th><%= sortable "description", "Description" %></th>
-      <th><%= sortable "user", "User" %></th>
+      <th><%= sortable "user", "Created By" %></th>
       <th><%= sortable "Category" %></th>
-      <th><%= sortable "open", "Status" %></th>
+      <th><%= sortable "Priority" %></th>
+      <th ><%= sortable "open", "Status" %></th>
+      <th style="color: #0066ff;">Votes</th>
+      <th><%= sortable "Assignee", "Assigned To" %></th>
       <th><%= sortable "created_at", "Created" %></th>
       <th><%= sortable "updated_at", "Last Update" %></th>
       <th colspan="5"></th>
@@ -27,10 +29,12 @@ Filter by :
     <% @issues.each do |issue| %>
       <tr>
         <td><%= issue.issue %></td>
-        <td><%= issue.description %></td>
         <td><%= issue.user %></td>
         <td><%= issue.category %></td>
+        <td><%= issue.priority %></td>
         <td><%= issue.getStatus %></td>
+        <td><%= issue.get_upvotes.size-issue.get_downvotes.size %></td>
+        <td><%= issue.assignee %></td>
         <td><%= issue.created_at %></td>
         <td><%= issue.updated_at %></td>
         <td><%= link_to 'Show', issue %></td>
@@ -42,4 +46,4 @@ Filter by :
 
 <br>
 
-<%= link_to 'New Issue', new_issue_path %>
+<%= link_to 'New Issue', new_issue_path, class:"btn btn-primary" %>

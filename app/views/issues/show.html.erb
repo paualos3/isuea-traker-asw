@@ -1,6 +1,8 @@
 <p id="notice"><%= notice %></p>
+<br>
+
 <div class="row">
-  <div class="col-sm-8" >
+  <div class="col-sm-8 well">
     <p >
       <strong>Issue: </strong>
       <%= @issue.issue %>
@@ -132,7 +134,7 @@
           <% end %>
           </p>
       </div>
-      <div class="com">
+      <div >
         <td><%= comment.body %></td>
       </div>
     </li>
@@ -142,6 +144,6 @@
 </ol> 
 <br>
   <!--%= render @issue.comments %-->
-  <h3> Add a Comment: </h3>
+  <h2> Add a Comment: </h2>
   <%= render 'comments/form' %>
 

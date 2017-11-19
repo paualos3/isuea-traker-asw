@@ -1,19 +1,22 @@
-<h1>Editing Issue</h1>
+<p>
+<h1 style="display:inline">Editing Issue </h1>
+
+<%= link_to 'Show', @issue , class:"btn-sm btn-primary" %> 
+
+<% if @issue.isOpened()   %>
+    <%= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id), class:"btn-sm btn-warning" %>
+<% end  %>
+
+<% if !@issue.isOpened()  %>
+    <%= link_to 'Open Issue',  openIssue_path(:id=>@issue.id), class:"btn-sm btn-success" %>
+<% end  %>
+</p>
 <!--
  opened: <= debug @issue.open %>, <= @issue.isOpened() %>
 -->
 <%= render 'form', issue: @issue %>
 
-<%= link_to 'Show', @issue %> |
-<%= link_to 'Back', issues_path %> |
 
-<% if @issue.isOpened()   %>
-    <%= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id) %>
-<% end  %>
-
-<% if !@issue.isOpened()  %>
-    <%= link_to 'Open Issue',  openIssue_path(:id=>@issue.id) %>
-<% end  %>
 <!-- FUNCIONA
 < if @issue.isOpened() == true  %>
     <= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id) %>
