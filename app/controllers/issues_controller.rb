@@ -30,6 +30,12 @@ class IssuesController < ApplicationController
     @issues = Issue.where(user: current_user.name).order(sort_column + " " + sort_direction)
   end
   
+  def watching
+    logger.debug("Opened function at controller")
+    @issues = Issue.order(sort_column + " " + sort_direction) #de moment he fet servir la de closed per provar que funcionés
+    #@issues = Issue.where(watching: true || user: current_user.nam).order(sort_column + " " + sort_direction) hauria de ser quelcom similar a aquesta
+  end
+  
   
   def sort_column
     sortValue = params[:sort]
@@ -149,6 +155,16 @@ class IssuesController < ApplicationController
     @issue.downvote_from current_user
     redirect_to @issue
   end
+  
+  def watch
+    current_user.watch(params[:id])
+    redirect_to @issue = set_issue
+  end
+  
+  def unwatch
+    current_user.unwatch(params[:id])
+    redirect_to @issue = set_issue
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -159,7 +175,7 @@ class IssuesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def issue_params
       # params.require(:issue).permit(:issue, :description, :user)
-       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category, :assignee, :attachment, :priority)
+       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category, :assignee, :attachment, :priority, :id)
     end
     
   end
@@ -196,6 +212,13 @@ class IssuesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @issue, notice: 'Only my issues' }
       format.json { render :mine, status: :ok, location: @issue }
+    end
+  end
+  
+  def watchingList
+    respond_to do |format|
+      format.html { redirect_to @issue, notice: 'Only watching issues'}
+      format.json { render :watching, status: :ok, location: @issue }
     end
   end
   

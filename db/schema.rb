@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171119123207) do
+ActiveRecord::Schema.define(version: 20171119224408) do
 
   create_table "ar_internal_metadata", primary_key: "key", force: :cascade do |t|
     t.string   "value"
@@ -81,5 +81,16 @@ ActiveRecord::Schema.define(version: 20171119123207) do
 
   add_index "votes", ["votable_id", "votable_type", "vote_scope"], name: "index_votes_on_votable_id_and_votable_type_and_vote_scope"
   add_index "votes", ["voter_id", "voter_type", "vote_scope"], name: "index_votes_on_voter_id_and_voter_type_and_vote_scope"
+
+  create_table "watch_relationships", force: :cascade do |t|
+    t.integer  "watcher_id"
+    t.integer  "watched_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "watch_relationships", ["watched_id", "watcher_id"], name: "index_watch_relationships_on_watched_id_and_watcher_id", unique: true
+  add_index "watch_relationships", ["watched_id"], name: "index_watch_relationships_on_watched_id"
+  add_index "watch_relationships", ["watcher_id"], name: "index_watch_relationships_on_watcher_id"
 
 end

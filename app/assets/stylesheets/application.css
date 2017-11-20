@@ -14,10 +14,18 @@
  *= require_self
  */
  
+ 
  body {
   font-family: Verdana, Helvetica, Arial;
   font-size: 14px;
   padding: 20px;
+}
+
+.center {
+    margin: auto;
+    width: 100%;
+    border: none;
+    padding: 10px;
 }
 
 .oriol {
@@ -38,7 +46,7 @@ a img {
 }
 
 a {
-  color: #0000FF;
+  color: #000000;
 }
 
 .clear {

@@ -19,9 +19,12 @@
   <body>
     <div>
       <% if current_user %>
-        Signed in as <strong><%= current_user.name %></strong>!
-        <%= link_to "Sign out", signout_path, id: "sign_out" %>
        
+        <nav class="navbar navbar-inverse justify-content-end bg-inverse">
+
+            <font color="white">Signed in as <strong><%= current_user.name %></strong>!
+            <%= link_to "Sign out", signout_path, id: "sign_out" %></font>
+        </nav>
       <% else %>
       <% end %>
     </div>

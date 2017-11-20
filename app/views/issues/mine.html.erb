@@ -1,49 +1,59 @@
 <p id="notice"><%= notice %></p>
 
-<h1>My issues</h1>
 
+<div=class nav-header>
+  <h1>My Issues</h1> 
+  <div class ="collapse navbar-collapse"> 
+  <p class="navbar-text navbar-right"><%= link_to 'New Issue', new_issue_path, class:"btn btn-primary"%>
+  </p>
+  </div>
+</div>
 
-Filter by : 
-    <td><%= link_to 'All |', 'issues'  %></td> 
-    <td><%= link_to ' Open |', 'opened' %></td> 
-    <td><%= link_to ' Closed |', 'closed' %></td> 
-    <td><%= link_to ' My Issues |', 'mine' %></td>
-    <br>
-  <br>
-
-<table class="pretty">
-    <tr>
-      <th><%= sortable "issue", "Title" %></th>
-      <th><%= sortable "user", "Created By" %></th>
-      <th><%= sortable "Category" %></th>
-      <th><%= sortable "Priority" %></th>
-      <th ><%= sortable "open", "Status" %></th>
-      <th style="color: #0066ff;">Votes</th>
-      <th><%= sortable "Assignee", "Assigned To" %></th>
-      <th><%= sortable "created_at", "Created" %></th>
-      <th><%= sortable "updated_at", "Last Update" %></th>
-      <th colspan="5"></th>
-    </tr>
-  
-    <!--% @issues = Issue.where(user: current_user.name) %-->
-    <% @issues.each do |issue| %>
-      <tr>
-        <td><%= issue.issue %></td>
-        <td><%= issue.user %></td>
-        <td><%= issue.category %></td>
-        <td><%= issue.priority %></td>
-        <td><%= issue.getStatus %></td>
-        <td><%= issue.get_upvotes.size-issue.get_downvotes.size %></td>
-        <td><%= issue.assignee %></td>
-        <td><%= issue.created_at %></td>
-        <td><%= issue.updated_at %></td>
-        <td><%= link_to 'Show', issue %></td>
-        <td><%= link_to 'Edit', edit_issue_path(issue) %></td>
-        <td><%= link_to 'Destroy', issue, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-</table>
-
+    <div>Filter by : 
+    <%= link_to 'All', 'issues', class:"btn btn-primary"   %>
+    <%= link_to ' Open', 'opened', class:"btn btn-success" %>
+    <%= link_to ' Closed', 'closed', class:"btn btn-danger"  %>
+    <%= link_to ' My Issues', 'mine', class:"btn btn-info" %>
+    <%= link_to ' Watching', 'watching', class:"btn btn-warning"  %>
+  </div>
+<br>
+<div> 
+  <center> 
+    <table class="table table-hover">
+        <tr>
+          <th><%= sortable "issue", "Title" %></th>
+          <th><center><%= sortable "user", "Created By" %></center></th>
+          <th><center><%= sortable "Category" %></center></th>
+          <th><center><%= sortable "Priority" %></center></th>
+          <th><center><%= sortable "open", "Status" %></center></th>
+          <th style="color: #0066ff;"><center>Votes</center></th>
+          <th><center><%= sortable "Assignee", "Assigned To" %></center></th>
+          <th><center><%= sortable "created_at", "Created" %></center></th>
+          <th><center><%= sortable "updated_at", "Last Update" %></center></th>
+          <th colspan="5"></th>
+        </tr>
+    
+        <% @issues.each do |issue| %>
+          <tr>
+            <td><%=link_to issue.issue, issue %></td>
+            <td><center><%= issue.user %></center></td>
+            <td><center><%= issue.category %></center></td>
+            <td><center><%= issue.priority %></center></td>
+            <td><center><%= issue.getStatus %></center></td>
+            <td><center><%= issue.get_upvotes.size-issue.get_downvotes.size %></center></td>
+            <td><center><%= issue.assignee %></center></td>
+            <td><center><%= time_ago_in_words(issue.created_at) %></center></td>
+            <td><center><%= time_ago_in_words(issue.updated_at) %></center></td>
+            <!--td><center><!--%= link_to 'Show', issue, class:"btn btn-primary" %--><!--/td-->
+            <!--% if (issue.user == session[:user_id]) %-->
+            <!--td><!--%= link_to 'Edit', edit_issue_path(issue), class:"btn btn-primary" %></td>
+            <!--td><!--%= link_to 'Destroy', issue, method: :delete, data: { confirm: 'Are you sure?' }, class:"btn btn-primary" %></td>
+            <!--%end%-->
+          </tr>
+        <% end %>
+    </table>
+    </center> 
+</div>    
 <br>
 
-<%= link_to 'New Issue', new_issue_path, class:"btn btn-primary" %>
+<!--%= link_to 'New Issue', new_issue_path, class:"btn btn-primary" >
