@@ -32,7 +32,7 @@ class IssuesController < ApplicationController
   
   def watching
     logger.debug("Opened function at controller")
-    @issues = Issue.order(sort_column + " " + sort_direction) #de moment he fet servir la de closed per provar que funcionés
+    @issues = Issue.order(sort_column + " " + sort_direction)  #de moment he fet servir la de closed per provar que funcionés
     #@issues = Issue.where(watching: true || user: current_user.nam).order(sort_column + " " + sort_direction) hauria de ser quelcom similar a aquesta
   end
   
