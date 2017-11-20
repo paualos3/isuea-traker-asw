@@ -14,7 +14,8 @@ Gerard Esteve
 
 Oriol Saborido
 
-http://isueatrakerasw.herokuapp.com/
+https://isuea-traker-asw.herokuapp.com/
+
 
 
 #IMPORTANT
