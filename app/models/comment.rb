@@ -19,10 +19,6 @@ class Comment < ActiveRecord::Base
       end
     end
     
-    def getContribution
-      return self.contribution
-    end
-    
     def hoursAgo
       distance_of_time_in_words_to_now(created_at)
     end

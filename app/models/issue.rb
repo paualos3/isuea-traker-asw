@@ -71,7 +71,7 @@ class Issue < ApplicationRecord
     end
     
     def Votes
-        self.get_upvotes.size
+        self.get_upvotes.size-self.get_downvotes.size
     end
     
     def getStatus

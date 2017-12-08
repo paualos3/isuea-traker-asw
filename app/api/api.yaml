@@ -24,7 +24,10 @@ securityDefinitions:
     in: header
 
 # Gerard
-# Token token= ya29.Gl0cBZzM354vdp7DrrULlSiD7q-4B2wczFo868EuTvMWyL1tr8e5wW7sYd_nGNMU1QVnNMhe6zQcEziNAMMqpcr75rgut5yk4sOnf3Zie61Ey35YSg1t-WeebmMgOFM
+# Token token=ya29.Gl0cBZzM354vdp7DrrULlSiD7q-4B2wczFo868EuTvMWyL1tr8e5wW7sYd_nGNMU1QVnNMhe6zQcEziNAMMqpcr75rgut5yk4sOnf3Zie61Ey35YSg1t-WeebmMgOFM
+
+# Pau
+# Token token=ya29.Gl0cBV6plKDa9hHJ22zfzqbF0WdlFAWOMkzj9rj_s9EVL0qu45bOh2nMI2bFTZB45_2sFdhB8Eis11K8bQab3LUgphHA5MqIyRa-hj01DwSWjY4Q6q_JpqJr4-9M6JQ
 
 # Describe your paths here
 paths:
@@ -310,6 +313,8 @@ paths:
     get:
       tags:
         - Comments
+      security:
+        - apikey: []
       description: Get `Comment` objects from Issue
       produces:
         - application/json
@@ -331,6 +336,8 @@ paths:
     post:
       tags: 
         - Comments
+      security:
+        - apikey: []
       description: Creates a new `Comment` for a Issue
       consumes: 
         - application/x-www-form-urlencoded
@@ -356,6 +363,8 @@ paths:
     get:
       tags:
         - Comments
+      security:
+        - apikey: []
       description: Get a `Comment` object from Issue
       produces: 
         - application/json
@@ -379,6 +388,8 @@ paths:
     put:
       tags:
         - Comments
+      security:
+        - apikey: []
       description: Update a `Comment` object
       consumes: 
         - application/x-www-form-urlencoded
@@ -408,6 +419,8 @@ paths:
     delete:
       tags:
         - Comments
+      security:
+        - apikey: []
       description: Delete a `Comment` object
       produces: 
         - application/json

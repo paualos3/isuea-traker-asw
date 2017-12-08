@@ -201,6 +201,20 @@ class IssuesController < ApplicationController
   end
   
   def mine
+      respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+      }
+    end
     logger.debug("Opened function at controller")
     @issues = Issue.where(user: current_user.name).order(sort_column + " " + sort_direction)
     respond_to do |format|
@@ -322,15 +336,32 @@ class IssuesController < ApplicationController
   # POST /issues
   # POST /issues.json
   def create # TO DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO descomentar linia del usuari
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+      }
+    end
     @title = params[:title]
     
     @issue = Issue.new(issue_params)  
     if (@title != nil)  
       @issue.issue = @title
     end
-   # @issue.user = current_user.name
+    @issue.user = current_user.name
     @issue.votes = 0
     @issue.status = 'Opened'
+    if (params[:status])
+      @issue.status = params[:status]
+    end
     @p = params[:issue][:priority]
     error = ""
     if (!['Trivial', 'Minor','Major','Critical','Blocker'].include? @p )
@@ -394,7 +425,7 @@ class IssuesController < ApplicationController
     @issue.destroy
     respond_to do |format|
       format.html { redirect_to issues_url, notice: 'Issue was successfully destroyed.' }
-      format.json { head :no_content }
+      format.json { render json: {"message": "successfully deleted issue" }, :status => :ok }
     end
   end
   
@@ -463,24 +494,92 @@ class IssuesController < ApplicationController
   
   #upvote_from user
   def upvote
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+      }
+    end
     @issue.upvote_from current_user
-    redirect_to @issue
+    respond_to do |format|
+      format.html { redirect_to @issue }
+      format.json { render json: {"message": "Issue liked"}, status: :ok }
+    end
   end
   
   #downvote_from user
   def downvote
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+      }
+    end
     @issue.downvote_from current_user
-    redirect_to @issue
+    respond_to do |format|
+      format.html { redirect_to @issue }
+      format.json { render json: {"message": "Issue unliked"}, status: :ok }
+    end
   end
   
   def watch
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+      }
+    end
     current_user.watch(params[:id])
-    redirect_to @issue = set_issue
+    respond_to do |format|
+      format.html { redirect_to @issue = set_issue }
+      format.json { render json: {"message": "Issue watched"}, status: :ok }
+    end
   end
   
   def unwatch
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+      }
+    end
     current_user.unwatch(params[:id])
-    redirect_to @issue = set_issue
+    respond_to do |format|
+      format.html { redirect_to @issue = set_issue }
+      format.json { render json: {"message": "Issue unwatched"}, status: :ok }
+    end  
   end
 
   private
@@ -493,7 +592,7 @@ class IssuesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def issue_params
       # params.require(:issue).permit(:issue, :description, :user)
-       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category, :assignee, :attachment, :priority, :id)
+       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category, :assignee, :attachment, :priority, :id, :status)
     end
     
   end
@@ -560,8 +659,8 @@ class IssuesController < ApplicationController
         return false
       else
         authenticate_or_request_with_http_token do |token, options|
-          @user = User.find_by(oauth_token: token) 
-          session[:user_id] = @user.uid 
+          user = User.find_by(oauth_token: token)
+          session[:user_id] = user.id
         end
       end
     end

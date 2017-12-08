@@ -3,9 +3,29 @@ class CommentsController < ApplicationController
   
   
   def index
-    comments = Comment.where(issue_id: params[:issue_id])
     respond_to do |format|
-      format.json {render json: comments, status: :ok, each_serializer: CommentSerializer}
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+      }
+    end
+    @comments = Comment.all
+    @comments = Comment.where(issue_id: params[:issue_id])
+    @filtred = Array.new
+    @comments.reverse_each do |variable|
+      @filtred.push(variable.as_json(methods: [:userName,:hoursAgo,:body],
+                                          except: [:created_at, :updated_at, :name]))
+    end
+    respond_to do |format|
+      format.html {}
+      format.json {render :json => @filtred, status: :ok}
     end
   end
   
@@ -69,6 +89,31 @@ class CommentsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to :back, notice: 'Comment was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+  
+  def authenticate
+    authenticate_or_request_with_http_token do |token, options|
+      #return User.find_by(oauth_token: token)
+      user = User.find_by(oauth_token: token)
+      if user == nil
+      # respond_to( :json => {:error => "Forbidden custom error", :status => 403}, :status => :not_found)
+        render :json => {:error => "Forbidden custom error", :status => 403}, :status => :not_found
+        #redirect_to :action => 'forbidden', :status => 403 # do whatever you want here
+        return nil
+      end
+      return user
+    end
+  end
+    
+  def authenticateCreation
+    if session[:user_id]
+      return false
+    else
+      authenticate_or_request_with_http_token do |token, options|
+        @user = User.find_by(oauth_token: token) 
+        session[:user_id] = @user.uid 
+      end
     end
   end
 end
