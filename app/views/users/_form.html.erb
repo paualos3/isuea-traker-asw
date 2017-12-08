@@ -15,6 +15,11 @@
     <%= form.label :name %>
     <%= form.text_field :name, id: :user_name %>
   </div>
+  
+  <div class="field">
+    <%= form.label :token %>
+    <%= form.text_field :token, id: :oauth_token %>
+  </div>
 
   <div class="actions">
     <%= form.submit %>

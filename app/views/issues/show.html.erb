@@ -46,13 +46,22 @@
           <% end %>
     <%= link_to 'Delete', @issue, method: :delete, data: { confirm: 'Are you sure?' }, class:"btn btn-primary" %>
     <%= link_to 'Back', issues_path, class:"btn btn-primary" %>
-    <% if @issue.isOpened()   %>
-    <%= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id), class:"btn-sm btn-warning" %>
-<% end  %>
 
-<% if !@issue.isOpened()  %>
     <%= link_to 'Open Issue',  openIssue_path(:id=>@issue.id), class:"btn-sm btn-success" %>
-<% end  %>
+    <%= link_to 'On hold Issue',  onHoldIssue_path(:id=>@issue.id), class:"btn-sm btn-primary" %>
+    <%= link_to 'Resolve Issue',  resolveIssue_path(:id=>@issue.id), class:"btn-sm btn-primary" %>
+    <%= link_to 'Duplicate Issue',  duplicateIssue_path(:id=>@issue.id), class:"btn-sm btn-primary" %>
+    <%= link_to 'Invalidate Issue',  invalidateIssue_path(:id=>@issue.id), class:"btn-sm btn-primary" %>
+    <%= link_to 'Wontfix Issue', wontfixIssue_path(:id=>@issue.id), class:"btn-sm btn-primary" %>
+    <%= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id), class:"btn-sm btn-warning" %>
+    
+    <!--% if @issue.isOpened()   %-->
+      <!--%= link_to 'Close Issue',  closeIssue_path(:id=>@issue.id), class:"btn-sm btn-warning" %-->
+    <!--% end  %-->
+
+    <!--% if !@issue.isOpened()  %-->
+      <!--%= link_to 'Open Issue',  openIssue_path(:id=>@issue.id), class:"btn-sm btn-success" %-->
+    <!--% end  %-->
     </div>
     <br>
     
@@ -152,8 +161,13 @@
 
   
 <br>
+<!--<  @editingComment = -1 %>
+NumEditing:
+  <= @editingComment %>-->
 <h2> <%= @issue.comments.count %> Comments</h2>
 <ol class="pageCommentBody">
+  
+  
   <% @issue.comments.each do |comment| %>
   <div class="well well-lg .well"> 
     <li class="list">
@@ -164,12 +178,17 @@
         <td><%= ' ago ' %></td>
           <% if(comment.getUserId == session[:user_id]) %>
             <td>| <b><%= link_to 'Destroy' , destroycomment_path(:id=>@issue.id, :comment=>comment),data: { confirm: 'Are you sure?' } , class:"btn-xs btn-danger"%></b></td>
-
+            <!--<td>| <b><= link_to 'Edit' , editcomment_path(:id=>@issue.id, :comment=>comment), class:"btn-xs btn-warning" %></b></td> -->
+            <td>| <b><%= link_to 'Edit' , class:"btn-xs btn-warning", :editingComment=> comment.id %></b></td>
           <% end %>
           </p>
       </div>
+
       <div >
         <td><%= comment.body %></td>
+        <% if(comment.getUserId == session[:user_id])  %>
+        <td> <%=  render  :partial => "comments/formEditComment", :locals => { :mcomment=> comment } %></td>
+        <% end %>
       </div>
     </li>
     </div>
@@ -178,6 +197,8 @@
 </ol> 
 <br>
   <!--%= render @issue.comments %-->
+  
+  
   <h2> Add a Comment: </h2>
   <%= render 'comments/form' %>
 

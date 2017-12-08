@@ -9,10 +9,15 @@
   </div>
 </div>
 
-    <div>Filter by : 
+  <div>Filter by : 
     <%= link_to 'All', 'issues', class:"btn btn-primary"   %>
-    <%= link_to ' Open', 'opened', class:"btn btn-success" %>
-    <%= link_to ' Closed', 'closed', class:"btn btn-danger"  %>
+    <%= link_to ' Open', 'Opened', class:"btn btn-success" %>
+    <%= link_to ' On hold', 'On holded', class:"btn btn-success" %>
+    <%= link_to ' Resolve', 'Resolved', class:"btn btn-success" %>
+    <%= link_to ' Duplicate', 'Duplicated', class:"btn btn-success" %>
+    <%= link_to ' Invalidate', 'Invalid', class:"btn btn-success" %>
+    <%= link_to ' Wontfix', 'Wontfixed', class:"btn btn-success" %>
+    <%= link_to ' Close', 'Closed', class:"btn btn-danger"  %>
     <%= link_to ' My Issues', 'mine', class:"btn btn-info" %>
     <%= link_to ' Watching', 'watching', class:"btn btn-warning"  %>
   </div>
@@ -37,9 +42,9 @@
           <tr>
             <td><%=link_to issue.issue, issue %></td>
             <td><center><%= issue.user %></center></td>
-            <td><center><%= issue.category %></center></td>
-            <td><center><%= issue.priority %></center></td>
-            <td><center><%= issue.getStatus %></center></td>
+            <td><center><%= link_to issue.category, issue.category %></center></td>
+            <td><center><%= link_to issue.priority, issue.priority %></center></td>
+            <td><center><%= link_to issue.getStatus, issue.getStatus %></center></td>
             <td><center><%= issue.get_upvotes.size-issue.get_downvotes.size %></center></td>
             <td><center><%= issue.assignee %></center></td>
             <td><center><%= time_ago_in_words(issue.created_at) %></center></td>

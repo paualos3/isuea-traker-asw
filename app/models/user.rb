@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_many :active_watches, class_name: "WatchRelationship", foreign_key: "watcher_id", dependent: :destroy
   has_many :watching, through: :active_watches, source: :watched
   acts_as_voter
+
   
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
@@ -29,5 +30,5 @@ class User < ApplicationRecord
   def watching?(other)
     watching.include?(other)
   end
-
+  
 end

@@ -1,5 +1,14 @@
 class CommentsController < ApplicationController
   include ActionView::Helpers::DateHelper
+  
+  
+  def index
+    comments = Comment.where(issue_id: params[:issue_id])
+    respond_to do |format|
+      format.json {render json: comments, status: :ok, each_serializer: CommentSerializer}
+    end
+  end
+  
   # GET /comments/1
   # GET /comments/1.json
   def show
@@ -12,6 +21,9 @@ class CommentsController < ApplicationController
 
   # GET /comments/1/edit
   def edit
+    
+    
+    
   end
 
   # POST /comments

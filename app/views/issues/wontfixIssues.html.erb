@@ -1,0 +1,64 @@
+<p id="notice"><%= notice %></p>
+
+
+<div=class nav-header>
+  <h1>Wontfixed Issues</h1> 
+  <div class ="collapse navbar-collapse"> 
+  <p class="navbar-text navbar-right"><%= link_to 'New Issue', new_issue_path, class:"btn btn-primary"%>
+  </p>
+  </div>
+</div>
+
+  <div>Filter by : 
+    <%= link_to 'All', 'issues', class:"btn btn-primary"   %>
+    <%= link_to ' Open', 'Opened', class:"btn btn-success" %>
+    <%= link_to ' On hold', 'On holded', class:"btn btn-success" %>
+    <%= link_to ' Resolve', 'Resolved', class:"btn btn-success" %>
+    <%= link_to ' Duplicate', 'Duplicated', class:"btn btn-success" %>
+    <%= link_to ' Invalidate', 'Invalid', class:"btn btn-success" %>
+    <%= link_to ' Wontfix', 'Wontfixed', class:"btn btn-success" %>
+    <%= link_to ' Close', 'Closed', class:"btn btn-danger"  %>
+    <%= link_to ' My Issues', 'mine', class:"btn btn-info" %>
+    <%= link_to ' Watching', 'watching', class:"btn btn-warning"  %>
+  </div>
+<br>
+<div> 
+  <center> 
+    <table class="table table-hover">
+        <tr>
+          <th><%= sortable "issue", "Title" %></th>
+          <th><center><%= sortable "user", "Created By" %></center></th>
+          <th><center><%= sortable "Category" %></center></th>
+          <th><center><%= sortable "Priority" %></center></th>
+          <th><center><%= sortable "open", "Status" %></center></th>
+          <th style="color: #0066ff;"><center>Votes</center></th>
+          <th><center><%= sortable "Assignee", "Assigned To" %></center></th>
+          <th><center><%= sortable "created_at", "Created" %></center></th>
+          <th><center><%= sortable "updated_at", "Last Update" %></center></th>
+          <th colspan="5"></th>
+        </tr>
+    
+        <% @issues.each do |issue| %>
+          <tr>
+            <td><%=link_to issue.issue, issue %></td>
+            <td><center><%= issue.user %></center></td>
+            <td><center><%= link_to issue.category, issue.category %></center></td>
+            <td><center><%= link_to issue.priority, issue.priority %></center></td>
+            <td><center><%= link_to issue.getStatus, issue.getStatus %></center></td>
+            <td><center><%= issue.get_upvotes.size-issue.get_downvotes.size %></center></td>
+            <td><center><%= issue.assignee %></center></td>
+            <td><center><%= time_ago_in_words(issue.created_at) %></center></td>
+            <td><center><%= time_ago_in_words(issue.updated_at) %></center></td>
+            <!--td><center><!--%= link_to 'Show', issue, class:"btn btn-primary" %--><!--/td-->
+            <!--% if (issue.user == session[:user_id]) %-->
+            <!--td><!--%= link_to 'Edit', edit_issue_path(issue), class:"btn btn-primary" %></td>
+            <!--td><!--%= link_to 'Destroy', issue, method: :delete, data: { confirm: 'Are you sure?' }, class:"btn btn-primary" %></td>
+            <!--%end%-->
+          </tr>
+        <% end %>
+    </table>
+    </center> 
+</div>    
+<br>
+
+<!--%= link_to 'New Issue', new_issue_path, class:"btn btn-primary" >

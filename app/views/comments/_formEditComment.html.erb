@@ -1,0 +1,17 @@
+<%= form_for([@issue, @issue.comments.build],:url => { :action => "editcomment", params: {id: @issue.id, mcomment: mcomment}} ) do |f| %>
+
+<div class="row">
+    <div class="col-sm-4 " >
+        <%= f.text_area :body %>
+    </div>
+      <%= f.hidden_field :user_id, :value=>session[:user_id] %>
+      <%= f.hidden_field :id, :value=>@issue.id %>
+     
+     <br>
+        <p>
+            <%= f.submit 'Edit Comment', :class=> 'btn btn-primary' %>
+        </p>
+    </br>
+</div>
+
+<% end %>

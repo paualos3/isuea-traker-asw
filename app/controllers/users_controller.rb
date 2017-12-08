@@ -5,11 +5,28 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     @users = User.all
+    
+    respond_to do |format|
+      format.html {}
+      format.json {
+        render :json => @users.as_json(methods: [:hoursAgo, :userURL], except: [:token, :secret, :provider, :auth_token, :updated_at, :uid, :created_at])
+      }
+    end
   end
 
   # GET /users/1
   # GET /users/1.json
   def show
+    respond_to do |format|
+      format.html {}
+      format.json {
+        if @user == authenticate
+          render :json => @user.as_json(methods: [:hoursAgo, :userURL], except: [:provider,:secret,:token,:updated_at,:created_at])
+        else
+          render :json => @user.as_json(methods: [:hoursAgo, :userURL], except: [:token,:provider,:secret,:auth_token,:updated_at,:created_at])
+        end
+      }
+    end
   end
 
   # GET /users/new
@@ -71,4 +88,14 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:name)
     end
+    
+    
+    
+    
+    def authenticate
+      authenticate_or_request_with_http_token do |token, options|
+        return User.find_by(auth_token: token)
+      end
+    end
+    
 end

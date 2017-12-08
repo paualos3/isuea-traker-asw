@@ -8,29 +8,95 @@ class Issue < ApplicationRecord
     #serialize :attachments, JSON
     
     def isOpened
-        if self.open == "t"
-            logger.debug "Issue opened" 
+        if self.status == "Opened"
+            logger.debug "Issue is opened" 
             return true
         end
-        logger.debug "Issue closed" 
+        logger.debug "Issue is not opened" 
         return false
     end
     
+    def isOnHold
+        if self.status == "On holded"
+            logger.debug "Issue is on hold" 
+            return true
+        end
+        logger.debug "Issue is not on hold" 
+        return false
+    end    
+    
+    def isResolved
+        if self.status == "Resolved"
+            logger.debug "Issue is resolved" 
+            return true
+        end
+        logger.debug "Issue is not resolved" 
+        return false
+    end
+
+    def isDuplicate
+        if self.status == "Duplicated"
+            logger.debug "Issue is duplicate" 
+            return true
+        end
+        logger.debug "Issue is not duplicate" 
+        return false
+    end 
+
+    def isInvalid
+        if self.status == "Invalid"
+            logger.debug "Issue is invalid" 
+            return true
+        end
+        logger.debug "Issue is not invalid" 
+        return false
+    end
+    
+    def isWontfix
+        if self.status == "Wontfixed"
+            logger.debug "Issue is wontfix" 
+            return true
+        end
+        logger.debug "Issue is not wontfix" 
+        return false
+    end    
     
     def isClosed
-        if self.open == "f"
-            logger.debug "l Issue closed" 
+        if self.status == "Closed"
+            logger.debug "Issue is closed" 
             return true
         end
-        logger.debug "l Issue opened" 
+        logger.debug "Issue is not closed" 
         return false
     end
     
+    def Votes
+        self.get_upvotes.size
+    end
     
-        
     def getStatus
         if self.isOpened
             return "Opened"
+        end
+        
+        if self.isOnHold
+            return "On holded"
+        end
+        
+        if self.isResolved
+            return "Resolved"
+        end
+        
+        if self.isDuplicate
+            return "Duplicated"
+        end
+        
+        if self.isInvalid
+            return "Invalid"
+        end
+        
+        if self.isWontfix
+            return "Wontfixed"
         end
         
         return "Closed"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171119224408) do
+ActiveRecord::Schema.define(version: 20171128195659) do
 
   create_table "ar_internal_metadata", primary_key: "key", force: :cascade do |t|
     t.string   "value"
@@ -42,12 +42,12 @@ ActiveRecord::Schema.define(version: 20171119224408) do
     t.integer  "votes"
     t.string   "pinnedId"
     t.string   "category"
-    t.string   "open"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "assignee"
     t.string   "attachment"
     t.string   "priority"
+    t.string   "status"
   end
 
   create_table "resumes", force: :cascade do |t|

@@ -30,14 +30,35 @@ Rails.application.routes.draw do
     get :watching
   end
   
-  get 'opened', to: 'issues#openIssues'
-  get 'closed', to: 'issues#closeIssues'
   get 'mine', to: 'issues#mine'
   get 'watching', to: 'issues#watching'
+  get 'Opened', to: 'issues#openIssues'
+  get 'On holded', to: 'issues#onHoldIssues'  
+  get 'Resolved', to: 'issues#resolveIssues'
+  get 'Duplicated', to: 'issues#duplicateIssues'
+  get 'Invalid', to: 'issues#invalidateIssues'
+  get 'Wontfixed', to: 'issues#wontfixIssues'
+  get 'Closed', to: 'issues#closeIssues'
+  get 'Task', to: 'issues#taskIssues'
+  get 'Bug', to: 'issues#bugIssues'
+  get 'Enhancement', to: 'issues#enhancementIssues'
+  get 'Proposal', to: 'issues#proposalIssues'
+  get 'Trivial', to: 'issues#trivialIssues'
+  get 'Minor', to: 'issues#minorIssues'
+  get 'Major', to: 'issues#majorIssues'
+  get 'Critical', to: 'issues#criticalIssues'
+  get 'Blocker', to: 'issues#blockerIssues'
   
+  post 'editcomment', controller: "issues", action: "editcomment"
   get 'destroycomment', controller: "issues" , action: "destroycomment"
-  get 'closeIssue', controller: "issues", action: "closeIssue"
   get 'openIssue', controller: "issues", action: "openIssue"
+  get 'onHoldIssue', controller: "issues", action: "onHoldIssue"
+  get 'resolveIssue', controller: "issues", action: "resolveIssue"
+  get 'duplicateIssue', controller: "issues", action: "duplicateIssue"
+  get 'invalidateIssue', controller: "issues", action: "invalidateIssue"
+  get 'wontfixIssue', controller: "issues", action: "wontfixIssue"
+  get 'closeIssue', controller: "issues", action: "closeIssue"
   get 'isOpen', controller: "issues", action: "isOpen"
+
 
 end

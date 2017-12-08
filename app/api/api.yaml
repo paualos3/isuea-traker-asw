@@ -1,0 +1,489 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "0.0.1"
+  title: Issue tracker
+#host: "isuea-traker-asw.herokuapp.com"
+host: "isuea-traker-asw-paualos3.c9users.io"
+
+
+produces:
+  - application/json
+consumes:
+  - application/json
+schemes:
+  - https
+securityDefinitions:
+  apikey:
+    type: apiKey
+    name: Authorization
+    in: header
+
+# Gerard
+# Token token= ya29.Gl0cBZzM354vdp7DrrULlSiD7q-4B2wczFo868EuTvMWyL1tr8e5wW7sYd_nGNMU1QVnNMhe6zQcEziNAMMqpcr75rgut5yk4sOnf3Zie61Ey35YSg1t-WeebmMgOFM
+
+# Describe your paths here
+paths:
+  # This is a path endpoint. Change it.
+  
+  /issues:
+    # This is a HTTP operation
+    get:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      # Describe this verb here. Note: you can use markdown
+      description: 
+        Gets `issues` objects.
+      parameters:
+        - name: "category"
+          in: "query"
+          description: "Gets `Issue` objects by category"
+          required: false
+          type: "string"
+          enum:
+          - "Bug"
+          - "Enhancement"
+          - "Proposal"
+          - "Task"
+        - name: status
+          in: query
+          description: Status de la issue, puede ser Invalid, Duplicated, On holded, Resolved, Wontfixed, Closed, Opened
+          type: string
+          enum:
+          - "Invalid"
+          - "Duplicated"
+          - "On holded"
+          - "Resolved"
+          - "Wontfixed"
+          - "Closed"
+          - "Opened"
+        - name: priority
+          in: query
+          description: Priority de la issue, puede ser Trivial, Major, Minor, Critical, Blocker.
+          type: string
+          enum:
+          - "Trivial"
+          - "Major"
+          - "Minor"
+          - "Critical"
+          - "Blocker"
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Issues
+            type: array
+            items:
+                $ref: '#/definitions/Issue'
+    post: #TO DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO    falta afegir el attachment
+      tags:
+        - Issues  
+      security:
+        - apikey: []
+      description: 
+        Gets closed `issues` objects.
+      parameters:
+        - name: issue
+          in: body
+          description: JSON de la nueva issue
+          required: true
+          schema:
+            title: issue
+            type: object
+            properties:
+              title:  
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+                description: Ha de ser { Task, Bug, Enhancement, Proposal }
+              assignee:
+                type: string
+              priority:
+                type: string
+                description: Ha de ser { Trivial, Minor, Major, Critical, Blocker }
+      responses:
+        201:
+          description: Issue created
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+          
+  /issues/{id}:
+    # This is a HTTP operation
+    get:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      # Describe this verb here. Note: you can use markdown
+      parameters:
+        - name: id
+          in: path
+          description: id de la issue
+          required: true
+          type: integer
+      description: 
+        Gets `issues` objects.
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            $ref: '#/definitions/Issue'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+            
+    delete:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: Delete a `Issue` object
+      produces: 
+        - application/json
+      parameters: 
+        - in: path
+          name: id
+          description: ID de la Issue
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        403:
+          description: You can't delete an Issue created by other users
+
+  /mine: #TO DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO tindre en compt lusuari
+    # This is a HTTP operation
+    get:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: 
+        Gets my `issues` objects.
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: Issues
+            type: array
+            items:
+                $ref: '#/definitions/Issue' 
+
+
+  /watching:  #TO DOOOOOOOOOOOOOOOOOOOOO falta user
+    # This is a HTTP operation
+    get:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: 
+        Gets my `issues` objects.
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: Issues
+            type: array
+            items:
+              $ref: '#/definitions/Issue' 
+
+  /issues/{id}/like:
+    put:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: Like the issue with the ID id as the current authenticated user
+      parameters:
+        - in: path
+          name: id
+          description: ID of the issue to like
+          required: true
+          type: integer
+      
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Issue liked"
+
+  /issues/{id}/unlike:
+    put:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: Unlike the issue with the ID id as the current authenticated user
+      parameters:
+        - in: path
+          name: id
+          description: ID of the issue to unlike
+          required: true
+          type: integer
+      
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Issue unliked"
+
+  /issues/{id}/watch:
+    put:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: Watch the issue with the ID id as the current authenticated user
+      parameters:
+        - in: path
+          name: id
+          description: ID of the issue to watch
+          required: true
+          type: integer
+      
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Issue watched"
+
+  /issues/{id}/unwatch:
+    put:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: Unwatch the issue with the ID id as the current authenticated user
+      parameters:
+        - in: path
+          name: id
+          description: ID of the issue to unwatch
+          required: true
+          type: integer
+      
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Issue unwatched"
+
+  /issues/{issue_id}/comments:
+    get:
+      tags:
+        - Comments
+      description: Get `Comment` objects from Issue
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: issue_id
+          description: ID of an Issue
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            title: ArrayOfComments
+            type: array
+            items:
+              $ref: '#/definitions/Comment'
+    
+    post:
+      tags: 
+        - Comments
+      description: Creates a new `Comment` for a Issue
+      consumes: 
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: path
+          name: issue_id
+          description: ID of an Issue
+          required: true
+          type: integer
+        - in: formData
+          name: body
+          type: string
+          description: Text of the comment
+            
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/Comment'
+    
+  
+  /issues/{issue_id}/comments/{comment_id}:
+    get:
+      tags:
+        - Comments
+      description: Get a `Comment` object from Issue
+      produces: 
+        - application/json
+      parameters: 
+        - in: path
+          name: issue_id
+          description: ID of an Issue
+          required: true
+          type: integer
+        - in: path
+          name: comment_id
+          description: ID of a Comment
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Comment'
+          
+    put:
+      tags:
+        - Comments
+      description: Update a `Comment` object
+      consumes: 
+        - application/x-www-form-urlencoded
+      produces: 
+        - application/json
+      parameters: 
+        - in: path
+          name: issue_id
+          description: ID of an Issue
+          required: true
+          type: integer
+        - in: path
+          name: comment_id
+          description: ID of a Comment
+          required: true
+          type: integer
+        - in: formData
+          name: body
+          type: string
+          description: Text of the Comment
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+          
+    delete:
+      tags:
+        - Comments
+      description: Delete a `Comment` object
+      produces: 
+        - application/json
+      parameters: 
+        - in: path
+          name: issue_id
+          description: ID of an Issue
+          required: true
+          type: integer
+        - in: path
+          name: comment_id
+          description: ID of a Comment
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+          
+#DEFINITIONS!!! #
+
+definitions:
+  Issue:
+    type: object
+    properties:
+      id:
+        type: integer
+      issue:
+        type: string
+      description: 
+        type: string
+      user: 
+        type: string
+      votes: 
+        type: integer
+      category: 
+        type: string
+      created_at: 
+        type: string
+      updated_at: 
+        type: string
+      assignee: 
+        type: string
+      attachment:
+        type: object
+        properties:
+          url:
+            type: string
+      priority: 
+        type: string
+      status: 
+        type: string
+  
+  Comment:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      body:
+        type: string
+      issue_id: 
+        type: integer
+      user_id: 
+        type: integer
+      created_at: 
+        type: string
+      updated_at: 
+        type: string
+          
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+      status:
+        type: integer
