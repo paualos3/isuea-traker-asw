@@ -38,7 +38,7 @@ gem 'acts_as_votable'
 
 gem 'bootstrap'
 
-gem 'rack-cors', :require => 'rack/cors'
+gem 'pg'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -62,6 +62,6 @@ group :development, :test do
 end
 
 group :production do
-  gem 'pg'
+  #gem 'pg'
   gem 'rails_12factor', '0.0.2'
 end
