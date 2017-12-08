@@ -7,8 +7,8 @@ swagger: '2.0'
 info:
   version: "0.0.1"
   title: Issue tracker
-#host: "isuea-traker-asw.herokuapp.com"
-host: "isuea-traker-asw-paualos3.c9users.io"
+host: "isuea-traker-asw.herokuapp.com"
+#host: "isuea-traker-asw-paualos3.c9users.io"
 
 
 produces:
@@ -168,6 +168,51 @@ paths:
           description: ID de la Issue
           required: true
           type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        403:
+          description: You can't delete an Issue created by other users
+    
+    put:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: Update a `Issue` object
+      produces: 
+        - application/json
+      parameters: 
+        - in: path
+          name: id
+          description: ID de la Issue
+          required: true
+          type: integer
+        - name: issue
+          in: body
+          description: JSON de la nueva issue
+          required: true
+          schema:
+            title: issue
+            type: object
+            properties:
+              title:  
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+                description: Ha de ser { Task, Bug, Enhancement, Proposal }
+              assignee:
+                type: string
+              priority:
+                type: string
+                description: Ha de ser { Trivial, Minor, Major, Critical, Blocker}
+              status:
+                type: string
+                description: Ha de ser { Invalid, Duplicated, Resolved, Wontfixed, Closed, On holded, Opened }
       responses:
         200:
           description: Success
