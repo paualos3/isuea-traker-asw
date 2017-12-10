@@ -16,7 +16,6 @@ class CommentsController < ApplicationController
         end
       }
     end
-    @comments = Comment.all
     @comments = Comment.where(issue_id: params[:issue_id])
     @filtred = Array.new
     @comments.reverse_each do |variable|
@@ -32,6 +31,30 @@ class CommentsController < ApplicationController
   # GET /comments/1
   # GET /comments/1.json
   def show
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+      }
+    end
+    @comments = Comment.where(issue_id: params[:issue_id])
+    @comments = @comments.where(id: params[:id])
+    @filtred = Array.new
+    @comments.reverse_each do |variable|
+      @filtred.push(variable.as_json(methods: [:userName,:hoursAgo,:body],
+                                          except: [:created_at, :updated_at, :name]))
+    end
+    respond_to do |format|
+      format.html {}
+      format.json {render :json => @filtred, status: :ok}
+    end
   end
 
   # GET /comments/new
@@ -49,14 +72,34 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    if !session
-      redirect_to "/oauth/google_oauth2" and return
+    
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+     #   pe=resp
+        params[:comment][:user_id]=resp.id
+      }
     end
     @issue = Issue.find(params[:issue_id])
 
-    @comments = @issue.comments.create(params[:comment].permit(:body, :user_id))
-    
-    redirect_to issue_path(@issue)
+    @comment = @issue.comments.create(params[:comment].permit(:body, :user_id))
+    #        resp = authenticate
+
+    respond_to do |format|
+      format.html { redirect_to issue_path(@issue) }
+      format.json {render :json => @comment.as_json(methods: [:userName,:hoursAgo,:body],
+                                          except: [:created_at, :updated_at, :name]), status: :ok}
+    #  format.json {render :json => comment_params.as_json()}
+    end
   end 
   
   
@@ -64,9 +107,26 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1.json
   def update
     respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+     #   pe=resp
+     #   params[:comment][:user_id]=resp.id
+      }
+    end
+    respond_to do |format|
       if @comment.update(comment_params)
         format.html { redirect_to @comment, notice: 'Comment was successfully updated.' }
-        format.json { render :show, status: :ok, location: @comment }
+        format.json {render :json => @comment.as_json(methods: [:userName,:hoursAgo,:body],
+                                          except: [:created_at, :updated_at, :name]), status: :ok}
       else
         format.html { render :edit }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
@@ -90,6 +150,12 @@ class CommentsController < ApplicationController
       format.html { redirect_to :back, notice: 'Comment was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  private
+  
+  def comment_params
+      params.permit(:body, :issue_id, :user_id, :comment)
   end
   
   def authenticate
@@ -117,6 +183,3 @@ class CommentsController < ApplicationController
     end
   end
 end
-  
-
-

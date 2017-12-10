@@ -7,8 +7,8 @@ swagger: '2.0'
 info:
   version: "0.0.1"
   title: Issue tracker
-host: "isuea-traker-asw.herokuapp.com"
-#host: "isuea-traker-asw-paualos3.c9users.io"
+#host: "isuea-traker-asw.herokuapp.com"
+host: "isuea-traker-asw-paualos3.c9users.io"
 
 
 produces:
@@ -27,7 +27,10 @@ securityDefinitions:
 # Token token=ya29.Gl0cBZzM354vdp7DrrULlSiD7q-4B2wczFo868EuTvMWyL1tr8e5wW7sYd_nGNMU1QVnNMhe6zQcEziNAMMqpcr75rgut5yk4sOnf3Zie61Ey35YSg1t-WeebmMgOFM
 
 # Pau
-# Token token=ya29.Gl0cBV6plKDa9hHJ22zfzqbF0WdlFAWOMkzj9rj_s9EVL0qu45bOh2nMI2bFTZB45_2sFdhB8Eis11K8bQab3LUgphHA5MqIyRa-hj01DwSWjY4Q6q_JpqJr4-9M6JQ
+# Token token=ya29.Gl0eBYt6DjVjltu3MUwkdq2SiDMshlhd3xLufUvAHTO1mPI6dtK836xSgdvEKRYZR8neen-HFseS2Iv1XdiiMVFJfZ4JQfD8ClNR7DsDtHnXEfZrP3jOCBY9d25VPGQ
+
+# Oriol
+# Token token=ya29.Gl0eBdxotuQznNjWaM4VHiHOYeQcEubt18gc10Xdp6o1jQm9y-kPzvm7-jjgS7ZgRekQ_CMQlbxONolz-1F7MjsgNGbjMrg7zBiasbd-eVRRSCQI_x4TagyyYstKMZ0
 
 # Describe your paths here
 paths:
@@ -44,7 +47,7 @@ paths:
       description: 
         Gets `issues` objects.
       parameters:
-        - name: "category"
+        - name: category
           in: "query"
           description: "Gets `Issue` objects by category"
           required: false
@@ -353,6 +356,38 @@ paths:
               message:
                 type: string
                 example: "Issue unwatched"
+                
+  /issues/{id}/attachment:
+    get:
+      tags:
+        - Issues
+      security:
+        - apikey: []
+      description: Get the file attached to the issue
+      parameters:
+        - in: path
+          name: id
+          description: ID of the issue to unwatch
+          required: true
+          type: integer
+      
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Downloading file"
+        '201':
+          description: Succesful response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "No file attached"          
 
   /issues/{issue_id}/comments:
     get:
@@ -383,20 +418,23 @@ paths:
         - Comments
       security:
         - apikey: []
-      description: Creates a new `Comment` for a Issue
-      consumes: 
-        - application/x-www-form-urlencoded
+      description: Creates a new `Comment` for an Issue
       parameters: 
-        - in: path
-          name: issue_id
+        - name: issue_id
+          in: path
           description: ID of an Issue
           required: true
           type: integer
-        - in: formData
-          name: body
-          type: string
-          description: Text of the comment
-            
+        - name: issue
+          in: body
+          description: JSON de la nueva issue
+          required: true
+          schema:
+            title: comment
+            type: object
+            properties:
+              body:
+                type: string
       responses:
         201:
           description: Created
@@ -436,25 +474,27 @@ paths:
       security:
         - apikey: []
       description: Update a `Comment` object
-      consumes: 
-        - application/x-www-form-urlencoded
-      produces: 
-        - application/json
       parameters: 
-        - in: path
-          name: issue_id
+        - name: issue_id
+          in: path
           description: ID of an Issue
           required: true
           type: integer
-        - in: path
-          name: comment_id
+        - name: comment_id
+          in: path
           description: ID of a Comment
           required: true
           type: integer
-        - in: formData
-          name: body
-          type: string
-          description: Text of the Comment
+        - name: body
+          in: body
+          description: JSON de la nueva issue
+          required: true
+          schema:
+            title: comment
+            type: object
+            properties:
+              body:
+                type: string
       responses:
         200:
           description: Success
@@ -545,3 +585,4 @@ definitions:
         type: string
       status:
         type: integer
+        

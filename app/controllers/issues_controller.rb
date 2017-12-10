@@ -289,19 +289,49 @@ class IssuesController < ApplicationController
   
   def destroycomment
     @comment=params[:comment]
-    logger.debug("destroycomment", @comment)
+    #logger.debug("destroycomment", @comment)
     @issue.comments.delete(@comment)
       redirect_to @issue, notice: 'Comment was successfully deleted.' 
     
   end
   
   def editcomment
+      respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+     #   pe=resp
+     #   params[:comment][:user_id]=resp.id
+      }
+    end
+      
     @comment = Comment.find(params[:mcomment])
     @bodyUpdate = params[:comment][:body]
     @comment.body = @bodyUpdate
     #15, :user_name => 'Samuel', :group => 'expert'
     @issue.comments.update(params[:mcomment],:body =>  @bodyUpdate)
-      redirect_to @issue, notice: 'Comment was successfully updated.' 
+    
+      
+      respond_to do |format|
+      if @issue.comments.update(params[:mcomment],:body =>  @bodyUpdate)
+        format.html { redirect_to @issue, notice: 'Comment was successfully updated.' }
+        format.json {render :json => @comment.as_json(methods: [:userName,:hoursAgo,:body],
+                                          except: [:created_at, :updated_at, :name]), status: :ok}
+      else
+        format.html { render :edit }
+        format.json { render json: @comment.errors, status: :unprocessable_entity }
+      end
+    end
+      
+      
     
   end
   
@@ -582,6 +612,22 @@ class IssuesController < ApplicationController
     end  
   end
 
+  def showAttachment
+    @issue = set_issue
+    respond_to do |format|
+      urlAttachment = "https://isuea-traker-asw-paualos3.c9users.io"
+      if @issue.attachment.to_s == "" 
+        urlAttachment = "No file attached" 
+        format.html {render plain: urlAttachment}
+        #format.json {render urlAttachment, status :ok, location @issue}
+      else
+        urlAttachment = urlAttachment + @issue.attachment.to_s 
+        format.html {render plain: urlAttachment}
+        #format.json {render urlAttachment, status :ok, location @issue}
+      end
+    end
+  end  
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_issue
@@ -644,6 +690,9 @@ class IssuesController < ApplicationController
       authenticate_or_request_with_http_token do |token, options|
         #return User.find_by(oauth_token: token)
         user = User.find_by(oauth_token: token)
+      #  session[:user_id] = user.id
+      #  current_user = user
+        
         if user == nil
         # respond_to( :json => {:error => "Forbidden custom error", :status => 403}, :status => :not_found)
           render :json => {:error => "Forbidden custom error", :status => 403}, :status => :not_found
@@ -664,4 +713,6 @@ class IssuesController < ApplicationController
         end
       end
     end
+    
+    
 #end

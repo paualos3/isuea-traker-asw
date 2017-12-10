@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     get :watching
   end
   
+  get '/issues/:id/attachment', to: 'issues#showAttachment'
+  post '/issues/:id/attachment', to: 'issues#createAttachment'
   get 'mine', to: 'issues#mine'
   get 'watching', to: 'issues#watching'
   get 'Opened', to: 'issues#openIssues'
@@ -59,6 +61,5 @@ Rails.application.routes.draw do
   get 'wontfixIssue', controller: "issues", action: "wontfixIssue"
   get 'closeIssue', controller: "issues", action: "closeIssue"
   get 'isOpen', controller: "issues", action: "isOpen"
-
-
+  
 end
