@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session # , only: Proc.new { |c| c.request.format.json? }
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
+
   helper_method :current_user
 
   def current_user

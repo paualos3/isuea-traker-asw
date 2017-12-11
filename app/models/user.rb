@@ -31,4 +31,8 @@ class User < ApplicationRecord
     watching.include?(other)
   end
   
+  def getId
+    self.uid
+  end
+  
 end

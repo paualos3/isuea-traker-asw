@@ -119,6 +119,7 @@ paths:
               priority:
                 type: string
                 description: Ha de ser { Trivial, Minor, Major, Critical, Blocker }
+        
       responses:
         201:
           description: Issue created
@@ -176,8 +177,6 @@ paths:
           description: Success
           schema:
             type: object
-        403:
-          description: You can't delete an Issue created by other users
     
     put:
       tags:
@@ -221,8 +220,10 @@ paths:
           description: Success
           schema:
             type: object
-        403:
-          description: You can't delete an Issue created by other users
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
 
   /mine: #TO DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO tindre en compt lusuari
     # This is a HTTP operation
@@ -284,6 +285,10 @@ paths:
               message:
                 type: string
                 example: "Issue liked"
+        405:
+          description: Method not allowed
+          schema:
+            $ref: '#/definitions/Error'
 
   /issues/{id}/unlike:
     put:
@@ -308,6 +313,10 @@ paths:
               message:
                 type: string
                 example: "Issue unliked"
+        405:
+          description: Method not allowed
+          schema:
+            $ref: '#/definitions/Error'
 
   /issues/{id}/watch:
     put:
@@ -332,6 +341,10 @@ paths:
               message:
                 type: string
                 example: "Issue watched"
+        405:
+          description: Method not allowed
+          schema:
+            $ref: '#/definitions/Error'
 
   /issues/{id}/unwatch:
     put:
@@ -356,18 +369,24 @@ paths:
               message:
                 type: string
                 example: "Issue unwatched"
+        405:
+          description: Method not allowed
+          schema:
+            $ref: '#/definitions/Error'
                 
   /issues/{id}/attachment:
     get:
       tags:
-        - Issues
+        - Attachments
       security:
         - apikey: []
       description: Get the file attached to the issue
+      produces:
+        - aplication/json
       parameters:
         - in: path
           name: id
-          description: ID of the issue to unwatch
+          description: ID of the issue to get attachment
           required: true
           type: integer
       
@@ -381,13 +400,46 @@ paths:
                 type: string
                 example: "Downloading file"
         '201':
-          description: Succesful response
+          description: Succesful response but unexisting file
           schema:
             type: object
             properties:
               message:
                 type: string
-                example: "No file attached"          
+                example: "No file attached"   
+                
+    post:
+      tags:
+        - Attachments
+      description: Attach a file to an Issue
+      produces:
+        - application/json
+      consumes:
+        - application/x-www-form-urlencoded
+        - multipart/form-data
+      security:
+        - apikey: []
+      parameters:
+        - in: path
+          name: id
+          description: ID of an Issue
+          required: true
+          type: integer
+        - in: formData
+          name: file
+          description: Atachment
+          type: file
+          format: binary
+          required: true
+      responses:
+        '201':
+          description: Created
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Attached file"        
 
   /issues/{issue_id}/comments:
     get:
@@ -467,6 +519,10 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/Comment'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
           
     put:
       tags:
@@ -500,6 +556,10 @@ paths:
           description: Success
           schema:
             type: object
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
           
     delete:
       tags:
@@ -585,4 +645,3 @@ definitions:
         type: string
       status:
         type: integer
-        

@@ -53,7 +53,13 @@ class CommentsController < ApplicationController
     end
     respond_to do |format|
       format.html {}
-      format.json {render :json => @filtred, status: :ok}
+      format.json {
+        if @filtred != []
+          render :json => @filtred, status: :ok
+        else
+          render :json => {:error => "Comment not found", :status => 404}, :status => :not_found
+        end
+      }
     end
   end
 
@@ -90,14 +96,14 @@ class CommentsController < ApplicationController
       }
     end
     @issue = Issue.find(params[:issue_id])
-
+    
     @comment = @issue.comments.create(params[:comment].permit(:body, :user_id))
     #        resp = authenticate
 
     respond_to do |format|
       format.html { redirect_to issue_path(@issue) }
       format.json {render :json => @comment.as_json(methods: [:userName,:hoursAgo,:body],
-                                          except: [:created_at, :updated_at, :name]), status: :ok}
+                                          except: [:created_at, :updated_at, :name]), status: 201}
     #  format.json {render :json => comment_params.as_json()}
     end
   end 
@@ -123,7 +129,12 @@ class CommentsController < ApplicationController
       }
     end
     respond_to do |format|
-      if @comment.update(comment_params)
+      @issue = Issue.find(params[:issue_id])
+      @comment = @issue.comments.find(params[:id])
+      if @comment.getUserId != current_user.id
+        format.html { }
+        format.json { render :json => {:error=>"cannot update a comment from another user", :status=>401}, :status=> 401 }
+      elsif @comment.update(comment_params)
         format.html { redirect_to @comment, notice: 'Comment was successfully updated.' }
         format.json {render :json => @comment.as_json(methods: [:userName,:hoursAgo,:body],
                                           except: [:created_at, :updated_at, :name]), status: :ok}
@@ -138,17 +149,29 @@ class CommentsController < ApplicationController
   # DELETE /comments/1.json
   def destroy
     respond_to do |format|
-        format.html {}
-        format.json { 
-          if @comment.user != authenticate 
-            raise ActionController::ParameterMissing.new("You cannot delete a comment that is not yours")
-          end
-        }
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+        authenticateCreation
+      }
     end
-    @comment.destroy
     respond_to do |format|
-      format.html { redirect_to :back, notice: 'Comment was successfully destroyed.' }
-      format.json { head :no_content }
+      @issue = Issue.find(params[:issue_id])
+      @comment = @issue.comments.find(params[:id])      
+      if @comment.getUserId != current_user.id
+          format.html { }
+          format.json { render json: {"error"=>"cannot delete a comment from another user", :status=>401}, status: 401 }
+      elsif @comment.destroy
+          format.html { redirect_to :back, notice: 'Comment was successfully destroyed.' }
+          format.json { render json: {"message"=>"successfully deleted"}, status: :ok }
+      end
     end
   end
   
@@ -178,7 +201,7 @@ class CommentsController < ApplicationController
     else
       authenticate_or_request_with_http_token do |token, options|
         @user = User.find_by(oauth_token: token) 
-        session[:user_id] = @user.uid 
+        session[:user_id] = @user.id
       end
     end
   end

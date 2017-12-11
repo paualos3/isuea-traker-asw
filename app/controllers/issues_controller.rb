@@ -1,5 +1,5 @@
 class IssuesController < ApplicationController
-  before_action :set_issue, only: [:show, :edit, :update, :destroy, :openIssue, :onHoldIssue, :resolveIssue, :duplicateIssue, :invalidateIssue, :wontfixIssue, :closeIssue, :destroycomment, :upvote, :downvote, :download_file, :editcomment]
+  before_action :set_issue, only: [:show, :edit, :update, :destroy, :createAttachment, :openIssue, :onHoldIssue, :resolveIssue, :duplicateIssue, :invalidateIssue, :wontfixIssue, :closeIssue, :destroycomment, :upvote, :downvote, :download_file, :editcomment]
   helper_method :sort_column, :sort_direction
 
   # GET /issues
@@ -16,9 +16,9 @@ class IssuesController < ApplicationController
         if resp == nil
           return
         end
+        authenticateCreation
       }
     end
-
     @issues = Issue.all
     @given_priority = params[:priority]
     @given_status = params[:status]
@@ -50,13 +50,18 @@ class IssuesController < ApplicationController
        error = "Invalid category 2"
       end
     end
-      
+    if !current_user
+      error = "No token/invalid token"
+    end
     respond_to do |format|
       if error != ""
         format.html { redirect_to @issue, notice: error }
         format.json {
-          jfjfjfj
-           render :json => {:error => error, :status => 400}, :status => :bad_request
+          if !current_user
+            render :json => {:error => error},:status => 401
+          else
+            render :json => {:error => error, :status => 400}, :status => :bad_request
+          end
         }
       
       else
@@ -64,15 +69,13 @@ class IssuesController < ApplicationController
           
         }
         format.json { #es como hacer un IF
-
           #authenticate
           @filtraje = Array.new
           @issues.reverse_each do |var|
             @filtraje.push(var.as_json(except: [:pinnedId, :votes], methods:[:Votes] ) )
           end
-          
-            render :json => @filtraje.as_json()
-      
+          render :json => @filtraje.as_json()
+  
         }
       end
 
@@ -201,7 +204,7 @@ class IssuesController < ApplicationController
   end
   
   def mine
-      respond_to do |format|
+    respond_to do |format|
       format.html { 
         if !current_user
           redirect_to "/auth/google_oauth2" and return
@@ -337,7 +340,7 @@ class IssuesController < ApplicationController
   
   def download_file
     @issue = Issue.find(params[:id])
-    send_file(@issue.attachment.path, :disposition=>'attachment' , :url_based_filename=>false)
+    send_file(@issue.attachment.path, :disposition=>'hment' , :url_based_filename=>false)
   end
 
 
@@ -395,12 +398,15 @@ class IssuesController < ApplicationController
     @p = params[:issue][:priority]
     error = ""
     if (!['Trivial', 'Minor','Major','Critical','Blocker'].include? @p )
-      error = "Invalid priority"
+      error += "Invalid priority. "
     end
     
     @p2 = params[:issue][:category]
     if (!['Task', 'Bug','Enhancement','Proposal'].include? @p2 )
-      error = "Invalid category"
+      error += "Invalid category. "
+    end
+    if (!User.find_by(name: params[:assignee]))
+      error += "Unexisting user to assign the issue. "
     end
     #Archivo subido por el usuario.
     archivo = params[:issue][:attachment];
@@ -410,14 +416,14 @@ class IssuesController < ApplicationController
       if error != ""
         format.html { redirect_to @issue, notice: error }
         format.json {
-           render :json => {:error => error, :status => 400}, :status => :bad_request
+           render :json => {:error => error, :status => :bad_request}, :status => :bad_request
         }
       
       elsif @issue.save
         format.html { redirect_to @issue, notice: 'Issue was successfully created.' }
         #format.json { render :show, status: :created, location: @issue }
         format.json {
-           render :json => @issue.as_json(except: [:pinnedId, :votes], methods:[:Votes] )
+           render :json => @issue.as_json(except: [:pinnedId, :votes], methods:[:Votes] ), :status => 201
         }
       else
         format.html { render :new }
@@ -429,13 +435,30 @@ class IssuesController < ApplicationController
   # PATCH/PUT /issues/1
   # PATCH/PUT /issues/1.json
   def update
+    error = ""
     respond_to do |format|
-      if @issue.update(issue_params)
+      if (!['Task', 'Bug','Enhancement','Proposal'].include? params[:category])
+        error += "Invalid on category. "
+      end
+      if (!['Trivial', 'Minor','Major','Critical','Blocker'].include? params[:priority] )
+        error += "Error on priority. "
+      end
+      if (!['Opened', 'Closed','Resolved','On hold','Duplicated','Invalid','Wontfix'].include? params[:status] )
+        error += "Error on priority. "
+      end
+      if (!User.find_by(name: params[:assignee]))
+        error += "Unexisting user to assign the issue. "
+      end
+      if error != ""
+        format.html { 
+          @issue.update(issue_params)
+          redirect_to @issue, notice: 'Issue was successfully updated.'
+          }
+        format.json { render :json => {:error => error, :status => 400}, :status => :bad_request }
+      else
+        @issue.update(issue_params)
         format.html { redirect_to @issue, notice: 'Issue was successfully updated.' }
         format.json { render :show, status: :ok, location: @issue }
-      else
-        format.html { render :edit }
-        format.json { render json: @issue.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -443,19 +466,17 @@ class IssuesController < ApplicationController
   # DELETE /issues/1
   # DELETE /issues/1.json
   def destroy
+    bool = true
     respond_to do |format|
         format.html {}
         format.json { 
           @user = authenticate
-          if @issue.user != @user.name
-            raise ActionController::ParameterMissing.new("You cannot delete a reply that is not yours")
-          end
         }
     end
     @issue.destroy
     respond_to do |format|
       format.html { redirect_to issues_url, notice: 'Issue was successfully destroyed.' }
-      format.json { render json: {"message": "successfully deleted issue" }, :status => :ok }
+      format.json { render json: {"message" => "successfully deleted issue" }, :status => :ok }
     end
   end
   
@@ -535,13 +556,20 @@ class IssuesController < ApplicationController
         if resp == nil
           return
         end
-        authenticateCreation
       }
     end
-    @issue.upvote_from current_user
     respond_to do |format|
-      format.html { redirect_to @issue }
-      format.json { render json: {"message": "Issue liked"}, status: :ok }
+      format.html { 
+        @issue.upvote_from current_user
+        redirect_to @issue }
+      format.json {
+        @issue.upvote_from authenticate
+        if @issue.vote_registered?
+          render json: {"message" => "Issue liked"}, status: :ok
+        else 
+          render json: {"message" => "Issue allready liked"}, status: 405
+        end
+      }
     end
   end
   
@@ -564,7 +592,13 @@ class IssuesController < ApplicationController
     @issue.downvote_from current_user
     respond_to do |format|
       format.html { redirect_to @issue }
-      format.json { render json: {"message": "Issue unliked"}, status: :ok }
+      format.json { 
+        if @issue.vote_registered?
+          render json: {"message" => "Issue unliked"}, status: :ok 
+        else
+          render json: {"message" => "Issue allready unliked"}, status: 405
+        end
+      }
     end
   end
   
@@ -583,10 +617,16 @@ class IssuesController < ApplicationController
         authenticateCreation
       }
     end
-    current_user.watch(params[:id])
+    @issue = set_issue
     respond_to do |format|
-      format.html { redirect_to @issue = set_issue }
-      format.json { render json: {"message": "Issue watched"}, status: :ok }
+      if current_user.watching?(@issue)
+        format.html { redirect_to @issue }
+        format.json { render json: {"message" => "You are allready watching this issue"}, status: 405 }
+      else
+        current_user.watch(params[:id])
+        format.html { redirect_to @issue }
+        format.json { render json: {"message" => "Issue watched"}, status: :ok }
+      end
     end
   end
   
@@ -605,28 +645,73 @@ class IssuesController < ApplicationController
         authenticateCreation
       }
     end
-    current_user.unwatch(params[:id])
+    @issue = set_issue
     respond_to do |format|
-      format.html { redirect_to @issue = set_issue }
-      format.json { render json: {"message": "Issue unwatched"}, status: :ok }
+      if !current_user.watching?(@issue)
+        format.html { redirect_to @issue}
+        format.json { render json: {"message" => "You are allready unwatching this issue"}, status: 405 }
+      else  
+        current_user.unwatch(params[:id])
+        format.html { redirect_to @issue}
+        format.json { render json: {"message" => "Issue unwatched"}, status: :ok }
+      end
     end  
   end
 
   def showAttachment
-    @issue = set_issue
+    respond_to do |format|
+      format.html { 
+        if !current_user
+          redirect_to "/auth/google_oauth2" and return
+        end
+      }
+      format.json {
+        resp = authenticate
+        if resp == nil
+          return
+        end
+      }
+    end
+    @issue = Issue.find(params[:id])
     respond_to do |format|
       urlAttachment = "https://isuea-traker-asw-paualos3.c9users.io"
       if @issue.attachment.to_s == "" 
         urlAttachment = "No file attached" 
         format.html {render plain: urlAttachment}
-        #format.json {render urlAttachment, status :ok, location @issue}
+        format.json {render json: {"message"=>"No file attached"}, status: :ok, serializer: IssuehmentSerializer}
+        #format.json {render urlhment, status :ok, location @issue}
       else
         urlAttachment = urlAttachment + @issue.attachment.to_s 
         format.html {render plain: urlAttachment}
-        #format.json {render urlAttachment, status :ok, location @issue}
+        format.json {render json: {"message"=>urlAttachment}, status: :ok}
       end
     end
+    #@issue = Issue.find(params[:id])
+    #respond_to do |format|
+     # if @issue.attachment.file?
+      #  format.json {render json: @issue, status: :ok, serializer: IssuehmentSerializer}
+      #else
+       # format.json {render json: {}, status: :ok}
+      #end
+    #end
   end  
+  
+  def createAttachment
+    @issue = Issue.find(params[:id])
+    @user = User.find_by(name: @issue.user)
+    #authenticateCreation
+    if @user != authenticate
+      respond_to do |format|
+        format.json {render json: {"error"=>"Forbidden, you are not the creator of this issue"}, status: :forbidden}
+      end
+    else
+      respond_to do |format|
+        @issue.update(attachment: params[:file])
+        @issue.save
+        format.json {render json: {"success"=>"File attached"}, status: :ok}
+      end
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -638,7 +723,7 @@ class IssuesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def issue_params
       # params.require(:issue).permit(:issue, :description, :user)
-       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category, :assignee, :attachment, :priority, :id, :status)
+       params.require(:issue).permit(:issue, :description, :user, :open, :votes, :category, :assignee, :hment, :priority, :id, :status)
     end
     
   end
@@ -689,28 +774,37 @@ class IssuesController < ApplicationController
     def authenticate
       authenticate_or_request_with_http_token do |token, options|
         #return User.find_by(oauth_token: token)
-        user = User.find_by(oauth_token: token)
+        @user = User.find_by(oauth_token: token)
       #  session[:user_id] = user.id
       #  current_user = user
         
-        if user == nil
+        if @user == nil
         # respond_to( :json => {:error => "Forbidden custom error", :status => 403}, :status => :not_found)
           render :json => {:error => "Forbidden custom error", :status => 403}, :status => :not_found
           #redirect_to :action => 'forbidden', :status => 403 # do whatever you want here
           return nil
         end
-        return user
+        session[:user_id] = @user.id
+        return @user
       end
     end
     
     def authenticateCreation
-      if session[:user_id]
-        return false
-      else
-        authenticate_or_request_with_http_token do |token, options|
-          user = User.find_by(oauth_token: token)
-          session[:user_id] = user.id
-        end
+      respond_to do |format|
+        format.html { 
+          if !current_user
+            redirect_to "/auth/google_oauth2" and return
+          end
+        }
+        format.json {
+          authenticate_or_request_with_http_token do |token, options|
+            @user = User.find_by(oauth_token: token) 
+            if @user == nil
+              return nil
+            end
+            session[:user_id] = @user.id
+          end
+        }
       end
     end
     
