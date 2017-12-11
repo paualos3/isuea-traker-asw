@@ -235,7 +235,13 @@ class IssuesController < ApplicationController
     respond_to do |format|
       format.html {}
       format.json { #es como hacer un IF
-        render :json => @issues.as_json(except: [:pinnedId,:votes], methods:[:Votes])
+        @filtraje = Array.new
+        @issues.reverse_each do |var|
+          if authenticate.watching?(var)  
+            @filtraje.push(var.as_json(except: [:pinnedId, :votes], methods:[:Votes] ) )
+          end
+        end
+        render :json => @filtraje.as_json()
       }
     end#de moment he fet servir la de closed per provar que funcionés
     #@issues = Issue.where(watching: true || user: current_user.nam).order(sort_column + " " + sort_direction) hauria de ser quelcom similar a aquesta
