@@ -16,7 +16,7 @@ class IssuesController < ApplicationController
         if resp == nil
           return
         end
-        authenticateCreation
+        #authenticateCreation
       }
     end
     @issues = Issue.all
@@ -58,7 +58,7 @@ class IssuesController < ApplicationController
         format.html { redirect_to @issue, notice: error }
         format.json {
           if !current_user
-            render :json => {:error => error},:status => 401
+            render :json => {:error => error,:status => 401 }
           else
             render :json => {:error => error, :status => 400}, :status => :bad_request
           end

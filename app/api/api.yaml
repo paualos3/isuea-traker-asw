@@ -7,8 +7,9 @@ swagger: '2.0'
 info:
   version: "0.0.1"
   title: Issue tracker
-#host: "isuea-traker-asw.herokuapp.com"
-host: "isuea-traker-asw-paualos3.c9users.io"
+host: "isuea-traker-asw.herokuapp.com"
+#host: "isuea-traker-asw-paualos3.c9users.io"
+
 
 
 produces:
@@ -23,14 +24,18 @@ securityDefinitions:
     name: Authorization
     in: header
 
-# Gerard
-# Token token=ya29.Gl0cBZzM354vdp7DrrULlSiD7q-4B2wczFo868EuTvMWyL1tr8e5wW7sYd_nGNMU1QVnNMhe6zQcEziNAMMqpcr75rgut5yk4sOnf3Zie61Ey35YSg1t-WeebmMgOFM
+##################################################################################
+#                                                                                #
+#  To get your own token first you must have loged in at least one time. Then    #
+#  get your token from the page https://isuea-traker-asw.herokuapp.com/users and #
+#  introduce it to the Authoritzation with the value: Token token={yourToken}    #
+#                                                                                #
+#  WHATCH OUT! EVERY TIME THAT YOU LOG IN YOU WILL GENERATE A NEW TOKEN!!        #
+#                                                                                #
+##################################################################################
 
 # Pau
-# Token token=ya29.Gl0eBYt6DjVjltu3MUwkdq2SiDMshlhd3xLufUvAHTO1mPI6dtK836xSgdvEKRYZR8neen-HFseS2Iv1XdiiMVFJfZ4JQfD8ClNR7DsDtHnXEfZrP3jOCBY9d25VPGQ
-
-# Oriol
-# Token token=ya29.Gl0eBdxotuQznNjWaM4VHiHOYeQcEubt18gc10Xdp6o1jQm9y-kPzvm7-jjgS7ZgRekQ_CMQlbxONolz-1F7MjsgNGbjMrg7zBiasbd-eVRRSCQI_x4TagyyYstKMZ0
+# Token token=ya29.Gl0fBRDbZy_QbbVLIrDKFwpC_iSFmdt7b9GJYi5iGFhQVE4vgwY4LjyIXjSpP0msXaALlYB3e35T8Eg03YKW_lL5tAj5LWrO3cQYzJcAZgu1cY52uefK7CQ_xBgv1Zc
 
 # Describe your paths here
 paths:
@@ -225,7 +230,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /mine: #TO DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO tindre en compt lusuari
+  /issues/mine:
     # This is a HTTP operation
     get:
       tags:
@@ -244,7 +249,7 @@ paths:
                 $ref: '#/definitions/Issue' 
 
 
-  /watching:  #TO DOOOOOOOOOOOOOOOOOOOOO falta user
+  /issues/watching:
     # This is a HTTP operation
     get:
       tags:

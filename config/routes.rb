@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   get 'sessions/create'
 
   get 'sessions/destroy'
-
+  get '/issues/mine', to: 'issues#mine'
+  get '/issues/watching', to: 'issues#watching'
   get 'auth/:provider/callback', to: 'sessions#create'
   get 'auth/failure', to: redirect('/')
   get 'signout', to: 'sessions#destroy', as: 'signout'
@@ -32,8 +33,6 @@ Rails.application.routes.draw do
   
   get '/issues/:id/attachment', to: 'issues#showAttachment'
   post '/issues/:id/attachment', to: 'issues#createAttachment'
-  get 'mine', to: 'issues#mine'
-  get 'watching', to: 'issues#watching'
   get 'Opened', to: 'issues#openIssues'
   get 'On holded', to: 'issues#onHoldIssues'  
   get 'Resolved', to: 'issues#resolveIssues'
