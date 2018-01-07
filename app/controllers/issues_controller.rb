@@ -165,7 +165,7 @@ class IssuesController < ApplicationController
   def issuesStatus
     @given_status = params[:status]
     error =""
-    if (['Invalid', 'Duplicate','Resolved','Wontfix','Closed','On hold','Opened'].include? @given_status )
+    if (['Invalid', 'Duplicate','Resolved','Wontfixed','Closed','On hold','Opened'].include? @given_status )
       error = "Invalid status"
     else
       @issues = Issue.where(status: @given_status).order(sort_column + " " + sort_direction)
@@ -449,7 +449,7 @@ class IssuesController < ApplicationController
       if (!['Trivial', 'Minor','Major','Critical','Blocker'].include? params[:priority] )
         error += "Error on priority. "
       end
-      if (!['Opened', 'Closed','Resolved','On holded','Duplicated','Invalid','Wontfix'].include? params[:status] )
+      if (!['Opened', 'Closed','Resolved','On holded','Duplicated','Invalid','Wontfixed'].include? params[:status] )
         error += "Error on status. "
       end
       if (!User.find_by(name: params[:assignee]))
