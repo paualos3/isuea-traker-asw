@@ -442,6 +442,7 @@ class IssuesController < ApplicationController
   # PATCH/PUT /issues/1.json
   def update
     error = ""
+    @title = params[:title]
     respond_to do |format|
       if (!['Task', 'Bug','Enhancement','Proposal'].include? params[:category])
         error += "Invalid on category. "
@@ -458,11 +459,13 @@ class IssuesController < ApplicationController
       if error != ""
         format.html { 
           @issue.update(issue_params)
+          @issue.update(issue: @title)
           redirect_to @issue, notice: 'Issue was successfully updated.'
           }
         format.json { render :json => {:error => error, :status => 400}, :status => :bad_request }
       else
         @issue.update(issue_params)
+        @issue.update(issue: @title)
         format.html { redirect_to @issue, notice: 'Issue was successfully updated.' }
         format.json { render :show, status: :ok, location: @issue }
       end
