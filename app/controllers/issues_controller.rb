@@ -72,7 +72,7 @@ class IssuesController < ApplicationController
           #authenticate
           @filtraje = Array.new
           @issues.reverse_each do |var|
-            @filtraje.push(var.as_json(except: [:pinnedId, :votes], methods:[:Votes] ) )
+            @filtraje.push(var.as_json(except: [:pinnedId, :votes], methods:[:Votes, :Vote], :include => { :watchers => { :only => [:name]}}))
           end
           render :json => @filtraje.as_json()
   
@@ -358,7 +358,7 @@ class IssuesController < ApplicationController
      respond_to do |format|
       format.html {}
       format.json { #es como hacer un IF
-        render :json => @issue.as_json(except: [:pinnedId,:votes], methods: [:Votes])
+        render :json => @issue.as_json(except: [:pinnedId,:votes], methods: [:Votes, :Vote], :include => { :watchers => { :only => [:name]}})
       }
     end
   end
@@ -429,7 +429,7 @@ class IssuesController < ApplicationController
         format.html { redirect_to @issue, notice: 'Issue was successfully created.' }
         #format.json { render :show, status: :created, location: @issue }
         format.json {
-           render :json => @issue.as_json(except: [:pinnedId, :votes], methods:[:Votes] ), :status => 201
+           render :json => @issue.as_json(except: [:pinnedId, :votes], methods:[:Votes, :Watching] ), :status => 201
         }
       else
         format.html { render :new }

@@ -74,6 +74,10 @@ class Issue < ApplicationRecord
         self.get_upvotes.size-self.get_downvotes.size
     end
     
+    def Vote
+        return "Implementar per saber si l'hem votat"
+    end
+    
     def getStatus
         if self.isOpened
             return "Opened"
@@ -101,5 +105,6 @@ class Issue < ApplicationRecord
         
         return "Closed"
     end
+    
 end
 

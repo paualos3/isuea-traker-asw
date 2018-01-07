@@ -12,7 +12,7 @@ class User < ApplicationRecord
       user.uid = auth.uid
       user.name = auth.info.name
       user.oauth_token = auth.credentials.token
-      user.oauth_expires_at = Time.at(auth.credentials.expires_at)
+      user.oauth_expires_at = Time.new(2050, 8, 1, 14, 35, 0)
       user.save!
     end
   end
