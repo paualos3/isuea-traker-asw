@@ -74,6 +74,14 @@ class Issue < ApplicationRecord
         self.get_upvotes.size-self.get_downvotes.size
     end
     
+    def UpVotes
+        self.get_upvotes.size
+    end
+    
+    def DownVotes
+        self.get_downvotes.size
+    end
+    
     def Vote
         return "Implementar per saber si l'hem votat"
     end

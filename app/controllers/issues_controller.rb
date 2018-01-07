@@ -358,7 +358,7 @@ class IssuesController < ApplicationController
      respond_to do |format|
       format.html {}
       format.json { #es como hacer un IF
-        render :json => @issue.as_json(except: [:pinnedId,:votes], methods: [:Votes, :Vote], :include => { :watchers => { :only => [:name]}})
+        render :json => @issue.as_json(except: [:pinnedId,:votes], methods: [:Votes, :Vote, :UpVotes, :DownVotes], :include => { :watchers => { :only => [:name]}})
       }
     end
   end
